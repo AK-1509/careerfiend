@@ -39,6 +39,7 @@ import type { GeneratedBulletSet } from "@careerfiend/bullets";
 import { buildProfileContext, type DocumentRefs } from "./profile-context";
 import { createRevision, type RevisionAnswer, type RevisionPayload } from "./revision";
 import { ensureState, transition } from "./transitions";
+import { buildAnswerSheet } from "./answer-sheet";
 
 /** Supplies a browser page per application; keeps it open during a takeover. */
 export interface PageProvider {
@@ -395,7 +396,9 @@ export async function prepare(
 
     // Public edition (FORM_FILLING=off): the job is done once the documents are tailored; you apply yourself.
     if (ctx.config.FORM_FILLING !== "on") {
-      const msg = "Your tailored résumé and cover letter are ready. Apply on the employer's site, then mark it submitted.";
+      // Read the form's questions (never filling it) so the answers are ready to copy and paste.
+      await buildAnswerSheet(ctx, applicationId, job, pages).catch((err) => ctx.logger.warn("answers.failed", { error: err }));
+      const msg = "Your tailored résumé, cover letter and form answers are ready. Apply on the employer's site, then mark it submitted.";
       await transition(ctx.db, applicationId, "MANUAL", actor, msg, { failureCategory: "DOCUMENTS_READY", failureMessage: msg });
       return { state: "MANUAL", category: "DOCUMENTS_READY", message: msg };
     }

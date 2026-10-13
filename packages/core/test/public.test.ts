@@ -6,6 +6,8 @@ import { createDb } from "@careerfiend/db";
 import { NullProvider, type AiProvider, type ResumeStructure } from "@careerfiend/ai";
 import { fromStructure, currentFacts } from "@careerfiend/profile";
 import {
+  answerSheetView,
+  askQuestion,
   connectLm,
   createAppContext,
   deleteAccount,
@@ -244,7 +246,42 @@ describe("public edition pipeline (form filling off)", () => {
     expect(app.failureCategory).toBe("DOCUMENTS_READY");
     const docs = await c.db.generatedDocument.findMany({ where: { applicationId: app.id } });
     expect(docs.map((d) => `${d.type}.${d.format}`).sort()).toEqual(expect.arrayContaining(["cover_letter.pdf", "resume.pdf"]));
-    // No form was opened: nothing was filled.
+    // The form was read, never filled or submitted.
     expect(await c.db.formField.count({ where: { applicationId: app.id } })).toBe(0);
+    expect(env.server.submissions).toHaveLength(0);
+
+    // Its questions come back with answers to copy and paste.
+    const sheet = await answerSheetView(c, app.id);
+    expect(sheet.source).toBe("form");
+    const row = (q: RegExp) => sheet.rows.find((r) => q.test(r.question));
+    expect(row(/^Email/)?.answer).toBe("applicant@example.com");
+    expect(row(/^Full name/)?.answer).toBe("Test Applicant");
+    expect(row(/^Mobile phone/)?.answer).toBe("(213) 555-0100"); // a saved answer from the Profile page
+    // Questions on later steps of the form are listed too (the steps are never clicked through).
+    expect(row(/Upload your resume/)?.note).toMatch(/tailored résumé PDF/);
+    const why = row(/Why are you interested/)!;
+    expect(why.answer).toBeNull(); // no model connected: nothing is made up
+    expect(why.note).toMatch(/Connect a language model/);
+
+    // With a model, an open question you paste gets a draft that cites your résumé lines.
+    class DraftingAi extends NullProvider {
+      override readonly available = true;
+      override async draftFreeResponse() {
+        return {
+          answer: "I reviewed batch-manufacturing records and want to keep doing careful quality work.",
+          claimKeys: ["experiences[acme-bio-quality-intern].responsibilities[1]"],
+          confidence: 0.9,
+          cannotAnswerReason: "",
+        };
+      }
+    }
+    const withAi: AppContext = { ...c, ai: new DraftingAi() };
+    await askQuestion(withAi, app.id, "Describe a time you improved a process.");
+    const after = await answerSheetView(withAi, app.id);
+    const asked = after.rows.find((r) => r.origin === "asked")!;
+    expect(asked.answer).toMatch(/batch-manufacturing records/);
+    expect(asked.from).toMatch(/language model/);
+    // Questions already read from the form are kept.
+    expect(after.rows.some((r) => /Why are you interested/.test(r.question))).toBe(true);
   });
 });

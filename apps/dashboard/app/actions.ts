@@ -7,7 +7,9 @@ import {
   applyToJob,
   answerQuestion,
   approve,
+  askQuestion,
   assignEmail,
+  removeAskedQuestion,
   changePassword,
   connectLm,
   deleteAccount,
@@ -661,4 +663,24 @@ export async function deleteAccountAction(f: FormData) {
   if (error) back("/settings", { error });
   (await cookies()).delete(SESSION_COOKIE);
   redirect("/login?msg=" + encodeURIComponent("Your account and all of its data were deleted."));
+}
+
+/* ---------------------------------------------------- answer sheet (public) */
+
+export async function askQuestionAction(f: FormData) {
+  await requireSession();
+  const id = str(f, "applicationId");
+  await attempt(appPath(id), async () => {
+    await askQuestion(await ctx(), id, str(f, "question"));
+    return "Question added to the answers below.";
+  });
+}
+
+export async function removeAskedQuestionAction(f: FormData) {
+  await requireSession();
+  const id = str(f, "applicationId");
+  await attempt(appPath(id), async () => {
+    await removeAskedQuestion(await ctx(), id, str(f, "fieldKey"));
+    return "Question removed.";
+  });
 }

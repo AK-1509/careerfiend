@@ -157,6 +157,18 @@ export const INSPECT_SCRIPT = `(() => {
   return out;
 })()`;
 
+/**
+ * Like INSPECT_SCRIPT, but also lists the controls of later, still hidden steps
+ * of the same form (read-only answer sheets: the steps are never clicked through).
+ * Hidden controls outside a form, and CAPTCHA or honeypot inputs, are skipped.
+ */
+export const INSPECT_ALL_SCRIPT = INSPECT_SCRIPT.replace(
+  "if (!visible && type !== 'file') continue;",
+  "if (!visible && (!el.closest('form') || /captcha|honeypot|recaptcha/i.test((el.name || '') + ' ' + (el.id || '')))) continue;",
+)
+  .replace("if (type === 'file' && !cfVis(el.closest('label, div, section, form') || el)) continue;", "")
+  .replace(".filter(cfVis);", ";");
+
 export const BUTTONS_SCRIPT = `(() => {
   ${HELPERS}
   var out = [];

@@ -27,5 +27,9 @@ export const MIGRATIONS: { name: string; sql: string }[] = [
   {
     "name": "0007_public_edition",
     "sql": "-- Public edition: accounts (shared database), résumé drafts and uploads (each tenant).\nCREATE TABLE \"Account\" (\n    \"id\" TEXT NOT NULL,\n    \"email\" TEXT NOT NULL,\n    \"passwordHash\" TEXT NOT NULL,\n    \"tenant\" TEXT NOT NULL,\n    \"failedLogins\" INTEGER NOT NULL DEFAULT 0,\n    \"lockedUntil\" TIMESTAMP(3),\n    \"lockCount\" INTEGER NOT NULL DEFAULT 0,\n    \"lastLoginAt\" TIMESTAMP(3),\n    \"lastWorkedAt\" TIMESTAMP(3),\n    \"createdAt\" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"Account_pkey\" PRIMARY KEY (\"id\")\n);\nCREATE UNIQUE INDEX \"Account_email_key\" ON \"Account\"(\"email\");\nCREATE UNIQUE INDEX \"Account_tenant_key\" ON \"Account\"(\"tenant\");\n\nCREATE TABLE \"ResumeDraft\" (\n    \"id\" TEXT NOT NULL DEFAULT 'me',\n    \"json\" TEXT NOT NULL,\n    \"version\" INTEGER NOT NULL,\n    \"origin\" TEXT NOT NULL,\n    \"updatedAt\" TIMESTAMP(3) NOT NULL,\n    \"createdAt\" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"ResumeDraft_pkey\" PRIMARY KEY (\"id\")\n);\n\nCREATE TABLE \"ResumeUpload\" (\n    \"id\" TEXT NOT NULL,\n    \"fileName\" TEXT NOT NULL,\n    \"sha256\" TEXT NOT NULL,\n    \"size\" INTEGER NOT NULL,\n    \"data\" BYTEA NOT NULL,\n    \"text\" TEXT NOT NULL,\n    \"status\" TEXT NOT NULL,\n    \"notes\" TEXT NOT NULL DEFAULT '[]',\n    \"method\" TEXT NOT NULL DEFAULT 'rules',\n    \"createdAt\" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"ResumeUpload_pkey\" PRIMARY KEY (\"id\")\n);\n"
+  },
+  {
+    "name": "0008_answer_sheet",
+    "sql": "-- Public edition: questions read from the application form, and drafts, for copy and paste.\nALTER TABLE \"Application\" ADD COLUMN \"answerSheet\" TEXT NOT NULL DEFAULT '{}';\n"
   }
 ];

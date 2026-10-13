@@ -13,7 +13,9 @@ This is the public, multi-account edition of a single-user job-application copil
 
    > **LinkedIn and Indeed links don't work.** Open the listing on LinkedIn or Indeed, follow it to the employer's application page (click **Apply** or **Apply on company site**), and send that link instead.
 
-5. Each link becomes an application. When it shows **Ready to apply**, open it, download the tailored résumé and cover letter (PDF, DOCX or text), apply on the employer's site, and press **I applied** so CareerFiend tracks it.
+5. Each link becomes an application. When it shows **Ready to apply**, open it: download the tailored résumé and cover letter (PDF, DOCX or text), and use the **answers for the application form**, each with a **Copy** button. Apply on the employer's site, then press **I applied** so CareerFiend tracks it.
+
+   CareerFiend never fills or submits the form. It opens the application page read-only to list its questions (including later steps already on the page) and answers each one from your résumé, your saved answers on the Profile page (phone, work authorization, salary...), the tailored cover letter, or, for open questions such as "Why are you interested?", a draft by your connected model that must cite your résumé lines. If the form can't be read (a sign-in wall, for example), you get the usual application questions instead, and you can paste any other question from the form to get an answer.
 
 What the tailoring may and may not do:
 

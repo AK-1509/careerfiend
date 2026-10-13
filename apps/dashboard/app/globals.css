@@ -495,3 +495,23 @@ ol.steps > li.done h3 {
 .landing .grid.two {
   align-items: start;
 }
+ol.answers {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+ol.answers > li + li {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.answer-text {
+  white-space: pre-wrap;
+  margin: 0.25rem 0;
+  padding: 0.4rem 0.55rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+form.inline-form {
+  display: inline;
+}

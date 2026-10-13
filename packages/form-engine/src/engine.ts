@@ -3,7 +3,7 @@ import path from "node:path";
 import type { Page } from "playwright";
 import { sha256, type FailureCategory, type FormFieldManifest, type SemanticFieldType } from "@careerfiend/shared";
 import { chooseOption, classifyButton, classifyField, fieldKeyFor, isSensitive, type FieldInput, type Proposal } from "@careerfiend/policy";
-import { BUTTONS_SCRIPT, GUARD_SCRIPT, INSPECT_SCRIPT, STATE_SCRIPT, type PageState, type RawButton, type RawControl } from "./dom";
+import { BUTTONS_SCRIPT, GUARD_SCRIPT, INSPECT_ALL_SCRIPT, INSPECT_SCRIPT, STATE_SCRIPT, type PageState, type RawButton, type RawControl } from "./dom";
 
 export interface InspectedField extends FieldInput {
   raw: RawControl;
@@ -53,8 +53,8 @@ export async function pageState(page: Page): Promise<PageState> {
   return (await page.evaluate(STATE_SCRIPT)) as PageState;
 }
 
-export async function inspectFields(page: Page): Promise<InspectedField[]> {
-  const raw = (await page.evaluate(INSPECT_SCRIPT)) as RawControl[];
+export async function inspectFields(page: Page, opts: { includeHiddenSteps?: boolean } = {}): Promise<InspectedField[]> {
+  const raw = (await page.evaluate(opts.includeHiddenSteps ? INSPECT_ALL_SCRIPT : INSPECT_SCRIPT)) as RawControl[];
   return raw.map((r) => {
     const label = r.label
       .replace(/\s*\*\s*$/, "")
@@ -223,6 +223,50 @@ function blockerOf(state: PageState): { category: FailureCategory; message: stri
   if (state.assessment)
     return { category: "UNSUPPORTED_FIELD", message: "The page starts an assessment or timed test. CareerFiend does not take tests; take over or skip." };
   return null;
+}
+
+/* -------------------------------------------------------- read only */
+
+export interface FormReading {
+  fields: InspectedField[];
+  /** Why the questions could not be read (sign-in wall, CAPTCHA, wrong site...), or null. */
+  blocked: string | null;
+  finalUrl: string;
+}
+
+/**
+ * Read an application form's questions without touching it (public edition:
+ * the answers are shown for copy and paste). Loads the page with the submit
+ * guard installed, never types, selects or clicks; lists the questions of later
+ * steps that are already on the page (hidden) too; if the page has no fields it
+ * follows at most one "Apply" link on the same site.
+ */
+export async function readApplicationForm(page: Page, opts: Pick<EngineOptions, "targetUrl" | "allowedHosts" | "stepTimeoutMs">): Promise<FormReading> {
+  await installGuard(page);
+  const timeout = opts.stepTimeoutMs ?? 30_000;
+  const open = async (url: string): Promise<string | null> => {
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout });
+    await settle(page, 1200);
+    if (!hostAllowed(page.url(), opts.allowedHosts)) return `The application link led to ${new URL(page.url()).host}, which is not the application site.`;
+    const blocker = blockerOf(await pageState(page));
+    return blocker ? blocker.message.replace(/ Take over in the browser window\.$/, "").replace(/; take over or skip\.$/, ".") : null;
+  };
+  let blocked = await open(opts.targetUrl);
+  let fields = blocked ? [] : await inspectFields(page, { includeHiddenSteps: true });
+  if (!blocked && !fields.length) {
+    const next = (await page.evaluate(`(() => {
+      const links = Array.from(document.querySelectorAll("a[href]"));
+      const a = links.find((l) => /\\bapply\\b/i.test(l.textContent || "") && /^https?:/.test(l.href) && l.href !== location.href);
+      return a ? a.href : null;
+    })()`)) as string | null;
+    if (next && hostAllowed(next, opts.allowedHosts)) {
+      blocked = await open(next);
+      fields = blocked ? [] : await inspectFields(page, { includeHiddenSteps: true });
+    }
+  }
+  const seen = new Set<string>();
+  fields = fields.filter((f) => f.label && !seen.has(f.fieldKey) && seen.add(f.fieldKey));
+  return { fields, blocked, finalUrl: page.url() };
 }
 
 /* ------------------------------------------------------------- prepare */

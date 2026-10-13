@@ -7,8 +7,9 @@
 3. Asks the person to connect a language model of their choice (Anthropic, OpenAI, Google Gemini, OpenRouter, Groq, DeepSeek, Mistral or any OpenAI-compatible API) with their own key, or to skip.
 4. Takes application links the person sends it. LinkedIn and Indeed links are refused with a clear message: follow the listing on that site to the employer's application page and send that link instead.
 5. For every link: reads the listing and builds a one-page résumé tailored to it from the person's own lines (reordered, with job-specific bullets that only restate what a line proves), and a cover letter where every claim cites a résumé line.
-6. Tracks every application (Ready to apply → Applied → replies) and builds a skill bank from the listings the person chose.
-7. With a model connected: Project Recommendations (small tools the person could build that show they can do what their saved jobs ask for), plus sharper requirement reading, bullets, letters and PDF reading.
+6. Lists answers to the application form's questions to copy and paste: it opens the form read-only (never typing, clicking or submitting), answers each question from the résumé, saved answers, the cover letter or a cited model draft, and lets the person paste more questions.
+7. Tracks every application (Ready to apply → Applied → replies) and builds a skill bank from the listings the person chose.
+8. With a model connected: Project Recommendations (small tools the person could build that show they can do what their saved jobs ask for), plus sharper requirement reading, bullets, letters and PDF reading.
 
 ## Users
 

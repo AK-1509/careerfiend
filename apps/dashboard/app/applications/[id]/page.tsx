@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { applicationDetail, canRegenerate } from "@careerfiend/core";
+import { answerSheetView, applicationDetail, canRegenerate } from "@careerfiend/core";
 import { ctx } from "@/lib/ctx";
 import { fmtDate, humanState, pct } from "@/lib/format";
 import { Badge, Empty, Flash } from "@/components/ui";
+import { AnswerSheet } from "@/components/answer-sheet";
 import {
   answerQuestionAction,
   approveAction,
@@ -40,6 +41,8 @@ export default async function ApplicationPage({
     notFound();
   }
   const { app, job, revision, warnings, letter, resumeReport } = d;
+  // Without form filling, the form's questions are answered here for copy and paste.
+  const sheet = c.config.FORM_FILLING !== "on" && !["QUEUED", "READING_JOB", "GENERATING_DOCUMENTS"].includes(app.state) ? await answerSheetView(c, id) : null;
   const state = app.state;
   const openQuestions = d.questions.filter((q) => !q.answeredAt);
   const editable = state === "READY_FOR_REVIEW" || state === "APPROVED";
@@ -146,6 +149,9 @@ export default async function ApplicationPage({
           </div>
         )
       )}
+
+      {/* ------------------------------------------------ answers to copy (public edition) */}
+      {sheet && <AnswerSheet applicationId={app.id} sheet={sheet} aiConnected={c.ai.available} />}
 
       {/* ------------------------------------------------ open questions */}
       {openQuestions.length > 0 && (

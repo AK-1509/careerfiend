@@ -291,47 +291,49 @@ export default async function Profile({ searchParams }: { searchParams: Promise<
         </form>
       </section>
 
-      {formFilling && (
-        <section aria-labelledby="vals-h">
-          <h2 id="vals-h">Application answers</h2>
-          <p className="small muted">Type each answer and press Save. Blank ones make a form stop and ask you.</p>
-          <div className="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Question</th>
-                  <th scope="col">Answer</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Set</th>
+      <section aria-labelledby="vals-h" id="saved-answers">
+        <h2 id="vals-h">Saved answers for application forms</h2>
+        <p className="small muted">
+          Phone, work authorization, sponsorship, salary, start date and similar answers that are not on your résumé. Type each and press Save: they appear in
+          every application&apos;s answer sheet{formFilling ? " and fill forms" : ""}. Sensitive ones are encrypted. Blank ones stay for you to answer each
+          time.
+        </p>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Question</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Status</th>
+                <th scope="col">Set</th>
+              </tr>
+            </thead>
+            <tbody>
+              {values.map((v) => (
+                <tr key={v.key}>
+                  <td>
+                    {v.label} {v.sensitive && <Badge value="SENSITIVE_PENDING" label="Sensitive (encrypted)" />}
+                  </td>
+                  <td>{v.value ?? <span className="muted">blank: you answer it each time</span>}</td>
+                  <td>
+                    <Badge value={v.status} />
+                  </td>
+                  <td>
+                    <form action={setProfileValueAction} className="row">
+                      <input type="hidden" name="key" value={v.key} />
+                      <label className="sr-only" htmlFor={`v-${v.key}`}>
+                        {v.label}
+                      </label>
+                      <input id={`v-${v.key}`} name="value" type="text" style={{ width: "12rem" }} />
+                      <button type="submit">Save</button>
+                    </form>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {values.map((v) => (
-                  <tr key={v.key}>
-                    <td>
-                      {v.label} {v.sensitive && <Badge value="SENSITIVE_PENDING" label="Sensitive (encrypted)" />}
-                    </td>
-                    <td>{v.value ?? <span className="muted">blank → asked when a form needs it</span>}</td>
-                    <td>
-                      <Badge value={v.status} />
-                    </td>
-                    <td>
-                      <form action={setProfileValueAction} className="row">
-                        <input type="hidden" name="key" value={v.key} />
-                        <label className="sr-only" htmlFor={`v-${v.key}`}>
-                          {v.label}
-                        </label>
-                        <input id={`v-${v.key}`} name="value" type="text" style={{ width: "12rem" }} />
-                        <button type="submit">Save</button>
-                      </form>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       {facts.length > 0 && (
         <details className="panel">

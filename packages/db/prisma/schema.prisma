@@ -167,6 +167,8 @@ model Application {
   takeoverRequested Boolean  @default(false)
   /// JSON: email-matching context captured at submission (domains, addresses, ATS ids, submittedAt).
   tracking          String   @default("{}")
+  /// JSON AnswerSheetStore: the application form's questions (read, never filled) and model drafts, for copy and paste.
+  answerSheet       String   @default("{}")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   revisions         ApplicationRevision[]

@@ -7,6 +7,7 @@
  * itself.
  */
 import { spawn, execFileSync, type ChildProcess } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { existsSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import PDFDocument from "pdfkit";
@@ -19,6 +20,8 @@ import { createAppContext, type AppContext } from "@careerfiend/core";
 import { runAllTenants } from "@careerfiend/worker";
 import { startFixtureServer, type FixtureServer } from "../../fixtures/server";
 import { REPO_ROOT, tempDir, tempPostgres } from "../helpers";
+
+process.env.CF_TEST_KEY ??= randomBytes(32).toString("base64");
 
 const DASH = path.join(REPO_ROOT, "apps/dashboard");
 const PASSWORD = "e2e password 123";
@@ -246,11 +249,24 @@ describe.skipIf(!hasPg)("public dashboard", () => {
     await link.click();
     await page.getByRole("heading", { name: "Ready to apply" }).waitFor();
     expect(await unlabeledControls(page)).toEqual([]);
+    // Answers for the form, read without filling it, ready to copy.
+    await page.getByRole("heading", { name: "Answers for the application form" }).waitFor();
+    expect(await page.locator(".answer-text", { hasText: "alex.morgan@example.com" }).count()).toBe(1);
+    expect(await page.getByRole("button", { name: /^Copy answer: Email address/ }).count()).toBe(1);
+    expect(await page.getByText("Why are you interested in this role?").count()).toBeGreaterThan(0);
+    await page.fill("#ask-q", "What is your favorite quality tool?");
+    await page.getByRole("button", { name: "Get an answer" }).click();
+    await page
+      .getByRole("status")
+      .filter({ hasText: /Question added/ })
+      .waitFor();
+    expect(await page.getByText("What is your favorite quality tool?").count()).toBe(1);
     const pdfLink = page.getByRole("link", { name: "PDF" }).first();
     const res = await alice.request.get(`${url}${await pdfLink.getAttribute("href")}`);
     expect(res.status()).toBe(200);
     expect(res.headers()["content-type"]).toBe("application/pdf");
 
+    await page.goto(`${url}${appPath}`);
     await page.getByRole("button", { name: /I applied/ }).click();
     await page.waitForURL(/msg=/);
     expect(await page.locator("h1 .badge").innerText()).toBe("Submitted");
