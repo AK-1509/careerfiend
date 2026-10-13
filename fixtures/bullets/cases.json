@@ -1,0 +1,234 @@
+[
+  {
+    "name": "Product analyst: exec title, SQL and team-management traps",
+    "job": {
+      "company": "Brightpath",
+      "title": "Product Analyst",
+      "requirements": [
+        {
+          "text": "Partner with the VP of Product to develop KPIs and success metrics for new features."
+        },
+        {
+          "text": "Analyze pricing and revenue trends using SQL to recommend pricing changes."
+        },
+        {
+          "text": "Test software prototypes with users and synthesize feedback."
+        },
+        {
+          "text": "Manage a team of two analysts."
+        },
+        {
+          "text": "Bachelor's degree in economics or a related field",
+          "kind": "degree"
+        }
+      ]
+    },
+    "resume": [
+      {
+        "id": "fintech-analyst",
+        "title": "Product Analyst Intern",
+        "organization": "Ledgerly",
+        "bullets": [
+          "Defined success metrics for the onboarding flow and reviewed them weekly with the product team.",
+          "Analyzed product pricing and revenue trends for 3 product lines.",
+          "Built a Python script that cleaned weekly sales data."
+        ]
+      },
+      {
+        "id": "capstone",
+        "type": "project",
+        "title": "Capstone",
+        "organization": "University",
+        "bullets": ["Ran usability sessions with 12 participants on early mockups.", "Synthesized interview findings into a prioritized feature list."]
+      }
+    ],
+    "script": [
+      {
+        "match": "KPIs",
+        "attempts": [
+          "Developed KPIs with the VP of Product for new features.",
+          "Defined KPIs and success metrics for the onboarding flow and reviewed them weekly with the product team."
+        ]
+      },
+      {
+        "match": "pricing",
+        "attempts": ["Analyzed pricing and revenue trends in SQL for 3 product lines.", "Analyzed product pricing and revenue trends across 3 product lines."]
+      },
+      {
+        "match": "prototypes",
+        "attempts": [
+          "Tested early prototypes with 12 users and synthesized their feedback into a prioritized feature list.",
+          "Tested early prototypes with 12 users and synthesized the findings into a prioritized feature list."
+        ]
+      },
+      {
+        "match": "Manage a team",
+        "attempts": ["Managed a team of two analysts.", "Managed a team of two analysts."]
+      }
+    ],
+    "expect": {
+      "mustNotContain": ["\\bSQL\\b", "\\bVP\\b", "vice president", "managed a team", "team of two"],
+      "bulletFor": ["KPIs", "prototypes"]
+    }
+  },
+  {
+    "name": "QA associate: CAPA and Veeva traps",
+    "job": {
+      "company": "Beacon Biologics",
+      "title": "Quality Associate",
+      "requirements": [
+        {
+          "text": "Review batch records for completeness under GMP",
+          "category": "responsibility"
+        },
+        {
+          "text": "Lead CAPA investigations and manage deviation reports"
+        },
+        {
+          "text": "Coordinate with manufacturing and QC teams",
+          "category": "responsibility"
+        },
+        {
+          "text": "Proficiency with Veeva Vault"
+        }
+      ]
+    },
+    "resume": [
+      {
+        "id": "acme",
+        "title": "Quality Intern",
+        "organization": "Acme Bio",
+        "bullets": [
+          "Performed QA testing on 12 batches under GMP protocols.",
+          "Prepared and reviewed batch-manufacturing records.",
+          "Collaborated across two functional teams: Quality Assurance and Manufacturing."
+        ]
+      }
+    ],
+    "script": [
+      {
+        "match": "batch records",
+        "attempts": ["Reviewed and prepared batch records for completeness."]
+      },
+      {
+        "match": "CAPA",
+        "attempts": ["Led CAPA investigations on 12 batches under GMP protocols.", "Led CAPA investigations on 12 batches.", "Led CAPA investigations."]
+      },
+      {
+        "match": "Coordinate",
+        "attempts": [
+          "Coordinated with QC leadership and manufacturing teams across 12 batches.",
+          "Coordinated work with manufacturing teams across two functional teams."
+        ]
+      },
+      {
+        "match": "Veeva",
+        "attempts": ["Managed documents in Veeva Vault."]
+      }
+    ],
+    "expect": {
+      "mustNotContain": ["CAPA", "Veeva", "\\bled\\b", "deviation"],
+      "bulletFor": ["batch records"]
+    }
+  },
+  {
+    "name": "Founder: investor and P&L traps",
+    "job": {
+      "company": "Northstar Ventures",
+      "title": "Strategy Associate",
+      "requirements": [
+        {
+          "text": "Prepare investor materials and present them to investors and the board"
+        },
+        {
+          "text": "Conduct market research and competitive analysis to size new markets"
+        },
+        {
+          "text": "Own the P&L for a business unit"
+        }
+      ]
+    },
+    "resume": [
+      {
+        "id": "startup",
+        "type": "project",
+        "title": "Founder",
+        "organization": "Sidequest Labs",
+        "bullets": [
+          "Conducted market research, producing market-sizing estimates.",
+          "Ran user interviews with 15 participants and synthesized findings.",
+          "Built a pitch deck summarizing the market opportunity."
+        ]
+      }
+    ],
+    "script": [
+      {
+        "match": "investor",
+        "attempts": [
+          "Built a pitch deck for investors and the board on the market opportunity.",
+          "Built a pitch deck summarizing the market opportunity and market-sizing estimates."
+        ]
+      },
+      {
+        "match": "market research",
+        "attempts": [
+          "Conducted market research and competitive analysis to size new markets.",
+          "Conducted market research and produced market-sizing estimates for new markets."
+        ]
+      },
+      {
+        "match": "P&L",
+        "attempts": ["Owned the P&L for the startup.", "Owned the P&L for the startup."]
+      }
+    ],
+    "expect": {
+      "mustNotContain": ["investor", "\\bboard\\b", "P&L", "competitive analysis"]
+    }
+  },
+  {
+    "name": "Data analyst: SQL, Tableau and executive-title traps",
+    "job": {
+      "company": "Cobalt Analytics",
+      "title": "Data Analyst",
+      "requirements": [
+        {
+          "text": "Write complex SQL queries to analyze customer data"
+        },
+        {
+          "text": "Build dashboards in Tableau for the CFO and finance team"
+        },
+        {
+          "text": "Present findings and data insights to senior leadership"
+        }
+      ]
+    },
+    "resume": [
+      {
+        "id": "dataco",
+        "title": "Analyst Intern",
+        "organization": "Data Co",
+        "bullets": ["Cleaned and analyzed data for Python-based models.", "Presented findings to leadership with 95% forecast accuracy."]
+      }
+    ],
+    "script": [
+      {
+        "match": "SQL",
+        "attempts": ["Analyzed customer data with SQL and Python-based models.", "Cleaned and analyzed data for Python-based models."]
+      },
+      {
+        "match": "Tableau",
+        "attempts": ["Built Tableau dashboards for the CFO.", "Built dashboards for the finance team."]
+      },
+      {
+        "match": "Present",
+        "attempts": [
+          "Presented data insights to the CFO with 95% forecast accuracy.",
+          "Presented findings and data insights to leadership with 95% forecast accuracy."
+        ]
+      }
+    ],
+    "expect": {
+      "mustNotContain": ["\\bSQL\\b", "Tableau", "\\bCFO\\b", "finance team", "dashboards"]
+    }
+  }
+]

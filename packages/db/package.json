@@ -1,0 +1,25 @@
+{
+  "name": "@careerfiend/db",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "migration": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0001_init/migration.sql && node scripts/embed-migrations.mjs"
+  },
+  "dependencies": {
+    "@careerfiend/shared": "*",
+    "@electric-sql/pglite": "0.5.8",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "7.10.0",
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.0",
+    "pglite-prisma-adapter": "^0.7.2",
+    "prisma": "7.10.0"
+  }
+}

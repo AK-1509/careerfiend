@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Apply - Senior Quality Associate - Beacon Biologics</title><link rel="stylesheet" href="/ats/style.css"></head>
+<body>
+<h1>Beacon Biologics — Application</h1>
+<p id="progress">Step 1 of 3</p>
+<form id="app" action="/ats/submit/multi-step" method="post" enctype="multipart/form-data" novalidate>
+  <section class="step" data-step="1">
+    <h2>Your information</h2>
+    <label for="name">Full name *</label><input id="name" name="name" required>
+    <label for="email">Email address *</label><input id="email" name="email" type="email" required>
+    <label for="phone">Mobile phone *</label><input id="phone" name="phone" type="tel" required pattern="[0-9\(\)\+\- .]{7,}">
+    <p class="error" id="phone-error" role="alert" hidden>Enter a valid phone number.</p>
+    <label for="city">City *</label><input id="city" name="city" required>
+    <label for="state">State *</label>
+    <select id="state" name="state" required><option value="">Choose one</option><option>California</option><option>Oregon</option><option>Washington</option></select>
+    <button type="button" class="next">Next</button>
+  </section>
+  <section class="step" data-step="2" hidden>
+    <h2>Documents and experience</h2>
+    <label for="resume">Upload your resume *</label><input id="resume" name="resume" type="file" required>
+    <label for="company">Current company</label><input id="company" name="company">
+    <label for="title">Current job title</label><input id="title" name="title">
+    <label for="why">Why are you interested in this role? *</label><textarea id="why" name="why" required></textarea>
+    <button type="button" class="back">Back</button>
+    <button type="button" class="next">Continue</button>
+  </section>
+  <section class="step" data-step="3" hidden>
+    <h2>Review</h2>
+    <p>Review your answers. Your application is not sent until you press Submit application.</p>
+    <label><input type="checkbox" name="privacy" id="privacy" required> I agree to the privacy notice *</label>
+    <button type="button" class="back">Back</button>
+    <button type="submit">Submit application</button>
+  </section>
+</form>
+<script>
+  const steps = [...document.querySelectorAll('.step')];
+  let current = 0;
+  function show(i) { steps.forEach((s, j) => (s.hidden = j !== i)); current = i; document.getElementById('progress').textContent = 'Step ' + (i + 1) + ' of 3'; }
+  function valid(step) {
+    let ok = true;
+    for (const el of step.querySelectorAll('input,select,textarea')) {
+      const bad = !el.checkValidity();
+      el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (bad) ok = false;
+    }
+    const phone = document.getElementById('phone');
+    document.getElementById('phone-error').hidden = step.dataset.step !== '1' || phone.checkValidity();
+    return ok;
+  }
+  document.querySelectorAll('.next').forEach((b) => b.addEventListener('click', () => { if (valid(steps[current])) show(current + 1); }));
+  document.querySelectorAll('.back').forEach((b) => b.addEventListener('click', () => show(current - 1)));
+  document.getElementById('app').addEventListener('submit', (e) => { if (!valid(steps[current])) e.preventDefault(); });
+</script>
+</body></html>

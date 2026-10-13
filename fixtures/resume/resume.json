@@ -1,0 +1,112 @@
+{
+  "profile": {
+    "name": "Test Applicant",
+    "headline": "Biotech operations specialist with GMP and product research experience",
+    "location": "Los Angeles, CA",
+    "email": "applicant@example.com",
+    "links": [
+      {
+        "label": "GitHub",
+        "url": "https://github.com/example"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "id": "python",
+      "label": "Python",
+      "category": "technical"
+    },
+    {
+      "id": "gmp",
+      "label": "GMP",
+      "category": "domain"
+    },
+    {
+      "id": "quality-assurance",
+      "label": "Quality Assurance",
+      "category": "domain"
+    },
+    {
+      "id": "market-research",
+      "label": "Market Research",
+      "category": "domain"
+    },
+    {
+      "id": "user-research",
+      "label": "User Research",
+      "category": "domain"
+    },
+    {
+      "id": "stakeholder-management",
+      "label": "Stakeholder Management",
+      "category": "soft"
+    }
+  ],
+  "languages": ["English", "Spanish"],
+  "experiences": [
+    {
+      "id": "state-university-bachelor-of-science-in-biology",
+      "type": "education",
+      "title": "Bachelor of Science in Biology",
+      "organization": "State University",
+      "location": "Los Angeles, CA",
+      "startDate": "2020-08",
+      "endDate": "2024-05",
+      "summary": "",
+      "responsibilities": ["Relevant coursework: Bioinformatics using Python, R, Unix; Pharmacology"],
+      "endorsedSkills": [],
+      "gallery": [],
+      "thumbnailId": null
+    },
+    {
+      "id": "acme-bio-quality-intern",
+      "type": "work",
+      "title": "Quality Intern",
+      "organization": "Acme Bio",
+      "location": "San Diego, CA",
+      "startDate": "2023-06",
+      "endDate": "2023-08",
+      "summary": "Supported GMP quality-assurance activities.",
+      "responsibilities": [
+        "Performed QA testing on 12 batches under GMP protocols.",
+        "Prepared and reviewed batch-manufacturing records.",
+        "Collaborated across two functional teams: Quality Assurance and Manufacturing."
+      ],
+      "endorsedSkills": ["gmp", "quality-assurance"],
+      "gallery": [],
+      "thumbnailId": null
+    },
+    {
+      "id": "data-co-analyst-intern",
+      "type": "work",
+      "title": "Analyst Intern",
+      "organization": "Data Co",
+      "location": "Remote",
+      "startDate": "2022-06",
+      "endDate": "2022-08",
+      "summary": "",
+      "responsibilities": ["Cleaned and analyzed data for Python-based models.", "Presented findings to leadership with 95% forecast accuracy."],
+      "endorsedSkills": ["python", "stakeholder-management"],
+      "gallery": [],
+      "thumbnailId": null
+    },
+    {
+      "id": "sidequest-labs-founder",
+      "type": "project",
+      "title": "Founder",
+      "organization": "Sidequest Labs",
+      "location": "Los Angeles, CA",
+      "startDate": "2024-01",
+      "endDate": null,
+      "summary": "Validated a consumer-health product concept.",
+      "responsibilities": [
+        "Conducted market research, producing market-sizing estimates.",
+        "Ran user interviews with 15 participants and synthesized findings."
+      ],
+      "endorsedSkills": ["market-research", "user-research"],
+      "gallery": [],
+      "thumbnailId": null
+    }
+  ]
+}

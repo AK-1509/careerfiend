@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Apply - Growth Associate</title><link rel="stylesheet" href="/ats/style.css"></head>
+<body>
+<h1>Apply</h1>
+<form id="app" action="/ats/submit/react-controls" method="post">
+  <label for="fullname">Name *</label><input id="fullname" name="fullname" required>
+  <label for="em">Email *</label><input id="em" name="em" required>
+  <div class="field">
+    <span id="country-label">Country *</span>
+    <div id="country" role="combobox" tabindex="0" aria-labelledby="country-label" aria-expanded="false" aria-controls="country-list" aria-required="true" data-value="">Select country</div>
+    <ul id="country-list" role="listbox" hidden>
+      <li role="option">Canada</li><li role="option">India</li><li role="option">United States</li>
+    </ul>
+    <input type="hidden" name="country" id="country-value">
+  </div>
+  <div class="field">
+    <span id="ack-label">I have read the job description *</span>
+    <div id="ack" role="checkbox" aria-checked="false" aria-labelledby="ack-label" tabindex="0">☐</div>
+    <input type="hidden" name="ack" id="ack-value">
+  </div>
+  <label for="remote">Work preference *</label>
+  <select id="remote" name="remote" required><option value="">Select</option><option>Remote</option><option>Hybrid</option></select>
+  <div id="dynamic"></div>
+  <button type="submit">Submit</button>
+</form>
+<script>
+  const combo = document.getElementById('country'), list = document.getElementById('country-list');
+  combo.addEventListener('click', () => { list.hidden = !list.hidden; combo.setAttribute('aria-expanded', String(!list.hidden)); });
+  list.querySelectorAll('[role=option]').forEach((o) => o.addEventListener('click', () => {
+    combo.textContent = o.textContent; combo.dataset.value = o.textContent; document.getElementById('country-value').value = o.textContent;
+    list.hidden = true; combo.setAttribute('aria-expanded', 'false');
+  }));
+  const ack = document.getElementById('ack');
+  ack.addEventListener('click', () => { const v = ack.getAttribute('aria-checked') !== 'true'; ack.setAttribute('aria-checked', String(v)); ack.textContent = v ? '☑' : '☐'; document.getElementById('ack-value').value = v ? 'yes' : ''; });
+  document.getElementById('remote').addEventListener('change', (e) => {
+    const d = document.getElementById('dynamic');
+    d.innerHTML = e.target.value === 'Hybrid' ? '<label for="office">Preferred office *</label><select id="office" name="office" required><option value="">Select</option><option>Los Angeles</option><option>Austin</option></select>' : '';
+  });
+</script>
+</body></html>

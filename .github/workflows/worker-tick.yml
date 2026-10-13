@@ -1,0 +1,17 @@
+# Starts the hosted CareerFiend worker every 30 minutes, 7am-9pm Pacific, so
+# watchlists are checked without anyone opening the dashboard. The endpoint is
+# public but only processes work already in people's queues.
+# Set the repository variable CAREERFIEND_URL (Settings → Variables) to your deployment's URL.
+name: Worker tick
+on:
+  schedule:
+    - cron: "*/30 14-23 * * *"
+    - cron: "*/30 0-4 * * *"
+  workflow_dispatch: {}
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - if: ${{ vars.CAREERFIEND_URL != '' }}
+        run: curl -fsS -X POST --max-time 30 "${{ vars.CAREERFIEND_URL }}/api/worker"

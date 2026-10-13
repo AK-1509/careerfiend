@@ -1,0 +1,45 @@
+{
+  "name": "careerfiend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Tailored résumés and cover letters for every job you apply to (public, multi-account edition)",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "setup": "tsx scripts/setup.ts",
+    "db:generate": "npm run -w @careerfiend/db generate",
+    "postinstall": "npm run -w @careerfiend/db generate",
+    "dev": "npm run -w @careerfiend/dashboard dev",
+    "dashboard": "npm run -w @careerfiend/dashboard start",
+    "worker": "npm run -w @careerfiend/worker start",
+    "fixtures": "tsx fixtures/server.ts",
+    "backup": "tsx scripts/backup.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit && npm run -w @careerfiend/dashboard typecheck",
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "build": "npm run -w @careerfiend/dashboard build",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build && npm run test:e2e",
+    "db:deploy": "tsx scripts/db-deploy.ts",
+    "hosted:env": "tsx scripts/hosted-env.ts",
+    "eval:bullets": "tsx scripts/eval-bullets.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.2",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.1"
+  }
+}

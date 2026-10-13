@@ -1,0 +1,18 @@
+{
+  "id": "abc-123",
+  "text": "Growth Associate",
+  "hostedUrl": "https://jobs.lever.co/acmeco/abc-123",
+  "applyUrl": "https://jobs.lever.co/acmeco/abc-123/apply",
+  "categories": { "location": "Remote - United States", "commitment": "Full-time", "team": "Growth" },
+  "workplaceType": "remote",
+  "description": "<div>Acme is hiring a growth associate.</div>",
+  "lists": [
+    {
+      "text": "Requirements",
+      "content": "<li>Market research experience</li><li>Experience with user interviews</li><li>Go-to-market strategy</li><li>Familiarity with HubSpot</li>"
+    },
+    { "text": "Nice to have", "content": "<li>Figma</li>" }
+  ],
+  "additional": "<div>Benefits: health, dental.</div>",
+  "createdAt": 1790000000000
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Apply - Sensitive questions</title><link rel="stylesheet" href="/ats/style.css"></head>
+<body>
+<h1>Apply</h1>
+<form id="app" action="/ats/submit/sensitive" method="post">
+  <label for="fn">First name *</label><input id="fn" name="fn" required>
+  <label for="ln">Last name *</label><input id="ln" name="ln" required>
+  <label for="em">Email *</label><input id="em" name="em" type="email" required>
+  <fieldset><legend>Are you legally authorized to work in the United States? *</legend>
+    <label><input type="radio" name="auth" value="yes" required> Yes</label><label><input type="radio" name="auth" value="no"> No</label></fieldset>
+  <fieldset><legend>Will you now or in the future require visa sponsorship? *</legend>
+    <label><input type="radio" name="sponsor" value="yes" required> Yes</label><label><input type="radio" name="sponsor" value="no"> No</label></fieldset>
+  <label for="salary">Desired salary *</label><input id="salary" name="salary" required>
+  <label for="race">Race / Ethnicity *</label>
+  <select id="race" name="race" required><option value="">Select</option><option>Asian</option><option>White</option><option>Decline to self-identify</option></select>
+  <label for="vet">Protected veteran status *</label>
+  <select id="vet" name="vet" required><option value="">Select</option><option>I am a protected veteran</option><option>I am not a protected veteran</option></select>
+  <label for="crim">Have you ever been convicted of a felony? *</label>
+  <select id="crim" name="crim" required><option value="">Select</option><option>Yes</option><option>No</option></select>
+  <label for="sig">Signature (type your full name) *</label><input id="sig" name="sig" required>
+  <button type="submit">Submit application</button>
+</form>
+</body></html>

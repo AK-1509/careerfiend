@@ -1,0 +1,19 @@
+{
+  "jobs": [
+    {
+      "id": 101,
+      "title": "Clinical Operations Associate",
+      "absolute_url": "https://boards.greenhouse.io/examplebio/jobs/101",
+      "location": { "name": "San Diego, CA" },
+      "updated_at": "2026-09-20T00:00:00Z",
+      "content": "&lt;h3&gt;Requirements&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;GMP experience&lt;/li&gt;&lt;li&gt;Quality assurance&lt;/li&gt;&lt;li&gt;Cross-functional collaboration&lt;/li&gt;&lt;/ul&gt;"
+    },
+    {
+      "id": 102,
+      "title": "Lab Manager",
+      "absolute_url": "https://boards.greenhouse.io/examplebio/jobs/102",
+      "location": { "name": "Austin, TX" },
+      "content": "&lt;h3&gt;Requirements&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;GMP&lt;/li&gt;&lt;/ul&gt;"
+    }
+  ]
+}

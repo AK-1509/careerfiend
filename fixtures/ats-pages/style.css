@@ -1,0 +1,8 @@
+body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+label { display: block; margin-top: 0.8rem; font-weight: 600; }
+input, select, textarea { display: block; width: 100%; padding: 0.4rem; margin-top: 0.25rem; box-sizing: border-box; }
+input[type=checkbox], input[type=radio] { display: inline; width: auto; }
+fieldset { margin-top: 1rem; }
+.error { color: #b00020; font-size: 0.9rem; }
+.step[hidden] { display: none; }
+button { margin-top: 1rem; padding: 0.5rem 1rem; }

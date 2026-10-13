@@ -1,0 +1,26 @@
+# Personal data and runtime state
+private/
+*.db
+*.db-journal
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*token*.json
+credentials*.json
+
+# Build and test output
+node_modules/
+.next/
+dist/
+coverage/
+playwright-report/
+test-results/
+.DS_Store
+
+# Generated
+packages/db/generated/
+*.tsbuildinfo
+next-env.d.ts

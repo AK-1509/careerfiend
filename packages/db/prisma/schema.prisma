@@ -1,0 +1,554 @@
+// CareerFiend data model (PostgreSQL). Hosted: Neon/any Postgres via
+// @prisma/adapter-pg. Local and tests: embedded PGlite (no server).
+// Enums and JSON are stored as validated strings.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Contact details and user-controlled application policies (single row "me").
+model UserProfile {
+  id        String   @id @default("me")
+  /// JSON: name, email, location, links — copied from resume.json profile (VERIFIED_FROM_SOURCE).
+  contact   String
+  /// JSON: application policies (EEO policy, excluded employers/titles, daily limit, ...).
+  policies  String   @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// One version of the resume source (D1): resume.json at a pinned commit.
+model SourceDocument {
+  id               String          @id
+  path             String
+  commit           String
+  fileSha256       String
+  /// `${commit}:${fileSha256}`
+  checksum         String          @unique
+  version          Int
+  extractionStatus String
+  isCurrent        Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  facts            ExperienceFact[]
+}
+
+/// Immutable verified fact with a provenance key (D1).
+model ExperienceFact {
+  id               String         @id
+  sourceDocumentId String
+  sourceDocument   SourceDocument @relation(fields: [sourceDocumentId], references: [id])
+  key              String
+  kind             String
+  experienceId     String?
+  experienceType   String?
+  text             String
+  status           String         @default("VERIFIED_FROM_SOURCE")
+  ordinal          Int
+  createdAt        DateTime       @default(now())
+
+  @@unique([sourceDocumentId, key])
+  @@index([key])
+}
+
+/// Profile values that are not in resume.json (answers-later.md, reusable answers).
+model ProfileValue {
+  key        String   @id
+  /// Encrypted when `sensitive` is true.
+  value      String?
+  status     String
+  sensitive  Boolean  @default(false)
+  source     String
+  label      String
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+}
+
+/// Skills inventory entry (D4).
+model Skill {
+  id                String   @id
+  label             String
+  normalizedLabel   String
+  aliases           String   @default("[]")
+  category          String
+  status            String
+  origin            String
+  inResumeRegistry  Boolean  @default(false)
+  evidence          String   @default("[]")
+  scope             String?
+  claimLimit        String?
+  basis             String?
+  confirmGroup      String?
+  parent            String?
+  firstSeen         String?
+  suggestedEvidence String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  events            SkillStatusEvent[]
+
+  @@index([normalizedLabel])
+}
+
+/// Append-only audit of every skill status change.
+model SkillStatusEvent {
+  id        String   @id
+  skillId   String
+  skill     Skill    @relation(fields: [skillId], references: [id])
+  from      String?
+  to        String
+  actor     String
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model Job {
+  id                String   @id
+  sourceUrl         String
+  canonicalUrl      String   @unique
+  applyUrl          String?
+  company           String
+  title             String
+  location          String
+  compensation      String?
+  /// JSON NormalizedJob
+  normalized        String
+  description       String
+  snapshotPath      String?
+  contentHash       String
+  source            String
+  /// You chose this listing (pasted it, or pressed Apply): its skills are in your skill bank and it has an application.
+  /// CareerFiend never decides whether you apply.
+  endorsed          Boolean  @default(false)
+  /// Keyword match for tailoring (share of skill items your documents can show). Information only.
+  coverage          Float?
+  /// JSON arrays: requirement lines not on your résumé yet; review notes
+  gaps              String   @default("[]")
+  warnings          String   @default("[]")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  matches           RequirementMatch[]
+  applications      Application[]
+}
+
+model RequirementMatch {
+  id            String  @id
+  jobId         String
+  job           Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  requirementId String
+  category      String
+  kind          String
+  text          String
+  /// JSON string[]
+  skillIds      String  @default("[]")
+  evidenceKeys  String  @default("[]")
+  confidence    Float
+  /// COVERED | TRANSFERABLE | GAP | NEEDS_CONFIRM | NOT_APPLICABLE
+  status        String
+  note          String?
+}
+
+model Application {
+  id                String   @id
+  jobId             String
+  job               Job      @relation(fields: [jobId], references: [id])
+  state             String
+  currentRevisionId String?
+  priority          Int      @default(0)
+  deferredUntil     DateTime?
+  sourceCommit      String?
+  failureCategory   String?
+  failureMessage    String?
+  /// Set when a failure happened during SUBMITTING: re-queue is forbidden.
+  failedDuringSubmit Boolean @default(false)
+  takeoverRequested Boolean  @default(false)
+  /// JSON: email-matching context captured at submission (domains, addresses, ATS ids, submittedAt).
+  tracking          String   @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  revisions         ApplicationRevision[]
+  documents         GeneratedDocument[]
+  fields            FormField[]
+  approvals         Approval[]
+  attempts          SubmissionAttempt[]
+  emails            EmailThreadLink[]
+  events            StatusEvent[]
+  questions         UserQuestion[]
+}
+
+/// Immutable snapshot of what would be submitted.
+model ApplicationRevision {
+  id            String      @id
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  number        Int
+  hash          String
+  /// JSON RevisionPayload (documents, answers, uploads, target URL, job snapshot hash, source commit)
+  payload       String
+  /// JSON Warning[]
+  warnings      String      @default("[]")
+  reason        String
+  createdAt     DateTime    @default(now())
+
+  @@unique([applicationId, number])
+}
+
+model GeneratedDocument {
+  id              String      @id
+  applicationId   String
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  revisionNumber  Int
+  /// resume | cover_letter
+  type            String
+  /// docx | pdf | txt
+  format          String
+  path            String
+  sha256          String
+  templateVersion String
+  /// JSON provenance report
+  provenance      String
+  createdAt       DateTime    @default(now())
+}
+
+model FormField {
+  id             String      @id
+  applicationId  String
+  application    Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  revisionNumber Int
+  step           Int
+  fieldKey       String
+  label          String
+  control        String
+  semanticType   String
+  required       Boolean
+  options        String      @default("[]")
+  /// Encrypted when sensitive.
+  proposedValue  String?
+  confidence     Float
+  source         String
+  provenance     String      @default("[]")
+  sensitive      Boolean
+  reviewState    String
+  validationMessage String?
+  note           String?
+}
+
+model Approval {
+  id            String      @id
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  revisionHash  String
+  approvedAt    DateTime    @default(now())
+  /// The exact confirmation value typed/clicked by the user.
+  confirmation  String
+  consumedAt    DateTime?
+  invalidatedAt DateTime?
+  invalidReason String?
+  /// JSON audit metadata (acknowledged warnings, user agent)
+  audit         String      @default("{}")
+  attempt       SubmissionAttempt?
+}
+
+model SubmissionAttempt {
+  id               String      @id
+  applicationId    String
+  application      Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  approvalId       String      @unique
+  approval         Approval    @relation(fields: [approvalId], references: [id])
+  idempotencyKey   String      @unique
+  revisionHash     String
+  startedAt        DateTime    @default(now())
+  endedAt          DateTime?
+  /// PENDING | SUBMITTED | FAILED | UNCERTAIN
+  result           String      @default("PENDING")
+  confirmationUrl  String?
+  confirmationText String?
+  screenshotPath   String?
+  errorCategory    String?
+  errorMessage     String?
+}
+
+model EmailMessage {
+  id             String   @id
+  providerId     String   @unique
+  threadId       String
+  fromAddress    String
+  toAddress      String?
+  subject        String
+  receivedAt     DateTime
+  /// MATCHED | UNMATCHED | IGNORED
+  matchStatus    String
+  classification String?
+  confidence     Float?
+  /// Only kept for matched or ambiguous mail (needed to review it); blank for ignored mail.
+  snippet        String   @default("")
+  /// JSON candidates and signals from the matcher.
+  evidence       String   @default("[]")
+  createdAt      DateTime @default(now())
+  links          EmailThreadLink[]
+}
+
+model EmailThreadLink {
+  id             String       @id
+  applicationId  String
+  application    Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  emailId        String
+  email          EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  threadId       String
+  messageId      String
+  /// JSON matching evidence
+  evidence       String
+  label          String
+  classification String
+  confidence     Float
+  /// auto | manual
+  assignedBy     String
+  createdAt      DateTime     @default(now())
+
+  @@unique([applicationId, messageId])
+}
+
+/// Append-only state transition log.
+model StatusEvent {
+  id            String      @id
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  from          String?
+  to            String
+  actor         String
+  reason        String
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId, createdAt])
+}
+
+model UserQuestion {
+  id            String      @id
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  /// FIELD | SKILL_CONFIRM | TAKEOVER
+  kind          String
+  fieldKey      String
+  semanticType  String?
+  question      String
+  context       String
+  options       String      @default("[]")
+  sensitive     Boolean     @default(false)
+  /// Encrypted when sensitive.
+  answer        String?
+  reusable      Boolean     @default(false)
+  answeredAt    DateTime?
+  createdAt     DateTime    @default(now())
+
+  @@unique([applicationId, kind, fieldKey])
+}
+
+/// Durable database-backed work queue.
+model WorkItem {
+  id          String    @id
+  kind        String
+  payload     String
+  status      String    @default("PENDING")
+  dedupeKey   String?   @unique
+  runAt       DateTime  @default(now())
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  leaseUntil  DateTime?
+  leasedBy    String?
+  lastError   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, runAt])
+}
+
+model WatchlistCompany {
+  id        String   @id
+  ats       String
+  boardSlug String
+  name      String
+  enabled   Boolean  @default(true)
+  lastPolledAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@unique([ats, boardSlug])
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+/// Encrypted OAuth credentials (never plaintext).
+model OAuthToken {
+  provider  String   @id
+  encrypted String
+  scope     String
+  account   String?
+  updatedAt DateTime @updatedAt
+}
+
+/// Generated documents, screenshots and manifests. Stored in the database so
+/// the hosted dashboard serves them behind the login (no public file URLs).
+/// The worker keeps a local copy under PRIVATE_DIR for browser uploads.
+model StoredFile {
+  /// Storage key relative to the output folder, e.g. "app_…/r1/resume.pdf"
+  path          String   @id
+  applicationId String?
+  contentType   String
+  sha256        String
+  size          Int
+  data          Bytes
+  createdAt     DateTime @default(now())
+
+  @@index([applicationId])
+}
+
+/// One Project Recommendations run: research (web search agent) -> ideas (structured synthesis) -> validated.
+model ProjectIdeaRun {
+  id         String    @id
+  /// initial | refresh
+  trigger    String
+  /// PENDING | RESEARCHING | RESEARCHED | SYNTHESIZING | DONE | FAILED
+  status     String
+  /// JSON: job snapshot the run was built from [{id, company, title, requirements:[{id,text}]}]
+  jobs       String
+  /// Market research notes written by the research agent
+  research   String?
+  /// JSON: [{url, title}] pages the research agent actually retrieved
+  sources    String    @default("[]")
+  /// JSON: validated ideas
+  ideas      String    @default("[]")
+  error      String?
+  attempts   Int       @default(0)
+  model      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  finishedAt DateTime?
+
+  @@index([createdAt])
+  @@index([status])
+}
+
+/// Skill bank: skills and duties taken from listings you posted yourself
+/// (you read them and judged yourself a match). They count toward future
+/// matches as TRANSFERABLE. They never fill a form field and never add text
+/// to the résumé. Years of experience, degrees, licenses, certifications,
+/// clearance and logistics are never banked (they can be checked as facts).
+model BankedSkill {
+  id              String          @id
+  /// skill (a short label such as "SQL" or "stakeholder communication") | duty (a whole requirement line)
+  kind            String
+  label           String
+  /// Normalized label (skill) or normalized text (duty); one row each.
+  normalizedLabel String          @unique
+  /// tool | competency | duty
+  category        String
+  /// ACTIVE | REMOVED (removed by you: ignored and never re-added)
+  status          String          @default("ACTIVE")
+  /// JSON [{jobId, company, title, requirement}] listings it came from
+  sources         String          @default("[]")
+  timesSeen       Int             @default(1)
+  /// When transferable matches were last computed for this entry
+  matchedAt       DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  transfers       TransferMatch[]
+
+  @@index([status])
+}
+
+/// Transferable-experience link: a banked skill backed by a résumé fact or a public GitHub repository.
+model TransferMatch {
+  id            String      @id
+  bankedSkillId String
+  bankedSkill   BankedSkill @relation(fields: [bankedSkillId], references: [id], onDelete: Cascade)
+  /// RESUME_FACT | GITHUB_REPO
+  evidenceType  String
+  /// Fact provenance key, or "owner/repo"
+  evidenceRef   String
+  /// The fact text verbatim, or the repository summary
+  evidenceText  String
+  url           String?
+  score         Float
+  /// direct (the skill is named in the evidence) | related (same competency family) | overlap (shared terms) | ai (model proposal, checked)
+  method        String
+  rationale     String
+  createdAt     DateTime    @default(now())
+
+  @@unique([bankedSkillId, evidenceType, evidenceRef])
+}
+
+/// Experience representations for job-specific bullets (@careerfiend/bullets), one row per
+/// résumé version: built once (rules, plus one fast-model extraction pass when an AI provider
+/// is set) and reused for every listing until resume.json changes.
+model ExperienceProfileCache {
+  id        String   @id
+  /// SourceDocument checksum ("commit:fileSha256")
+  checksum  String
+  /// Representation format version (PROFILE_VERSION)
+  version   Int
+  /// rules | rules+model
+  method    String
+  /// JSON ExperienceProfile[]
+  payload   String
+  createdAt DateTime @default(now())
+
+  @@unique([checksum, version])
+}
+
+/// Public edition: one row per person who signed up. Lives in the shared
+/// accounts database (Postgres "public" schema). Everything else a person owns
+/// lives in their own tenant database (a Postgres schema or a PGlite folder
+/// named `tenant`), so every service runs unchanged on one person's data.
+model Account {
+  id           String    @id
+  email        String    @unique
+  /// scrypt hash (never the password)
+  passwordHash String
+  /// Tenant database name: Postgres schema / PGlite folder ("t_<id>")
+  tenant       String    @unique
+  failedLogins Int       @default(0)
+  lockedUntil  DateTime?
+  lockCount    Int       @default(0)
+  lastLoginAt  DateTime?
+  /// Last time the hosted worker processed this account (round-robin order)
+  lastWorkedAt DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+/// The résumé every application is built from (replaces resume.json in a git
+/// repo): built from an uploaded PDF and/or typed on the Profile page. Each
+/// save is a new version; facts are re-extracted per version.
+model ResumeDraft {
+  id        String   @id @default("me")
+  /// JSON in the resume.json shape (profile, skills, languages, experiences)
+  json      String
+  version   Int
+  /// upload | profile | upload+model
+  origin    String
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+/// Every résumé PDF the person uploaded, kept so they can see what was read.
+model ResumeUpload {
+  id        String   @id
+  fileName  String
+  sha256    String
+  size      Int
+  data      Bytes
+  /// Text extracted from the PDF
+  text      String
+  /// PARSED | FAILED
+  status    String
+  /// JSON string[]: what the parser could not read and what to check
+  notes     String   @default("[]")
+  /// rules | rules+model
+  method    String   @default("rules")
+  createdAt DateTime @default(now())
+}

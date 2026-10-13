@@ -1,0 +1,1932 @@
+{
+  "$comment": "Synthetic skills inventory for tests (paired with fixtures/resume/resume.json). Not anyone's real data.",
+  "version": 1,
+  "source": {
+    "file": "fixtures/resume/resume.json",
+    "repoPath": "fixtures",
+    "pinnedCommit": "v1"
+  },
+  "excluded": [],
+  "statuses": {
+    "VERIFIED_FROM_SOURCE": "Named in resume.json. Usable within scope and claimLimit.",
+    "CONFIRMED_BY_USER": "User ticked it. Usable.",
+    "UNVERIFIED": "Candidate. Never counted. Near-miss jobs raise a confirm question.",
+    "REJECTED_BY_USER": "User said no. Never asked again."
+  },
+  "origins": {
+    "resume": "Parsed from resume.json",
+    "inferred": "Proposed from resume context",
+    "job-description": "Appended from a job listing"
+  },
+  "skills": [
+    {
+      "id": "python",
+      "label": "Python",
+      "aliases": [],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "machine-learning",
+      "label": "Machine Learning",
+      "aliases": [
+        "ML"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-azure",
+      "label": "Microsoft Azure",
+      "aliases": [
+        "Azure"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "statistical-analysis",
+      "label": "Statistical Analysis",
+      "aliases": [
+        "statistics"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "figma",
+      "label": "Figma",
+      "aliases": [],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "adobe-creative-suite",
+      "label": "Adobe Creative Suite",
+      "aliases": [
+        "Adobe Creative Cloud"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "gmp",
+      "label": "GMP",
+      "aliases": [
+        "cGMP",
+        "Good Manufacturing Practice"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "quality-assurance",
+      "label": "Quality Assurance",
+      "aliases": [
+        "QA"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "process-improvement",
+      "label": "Process Improvement",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "market-research",
+      "label": "Market Research",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "business-development",
+      "label": "Business Development",
+      "aliases": [
+        "BD"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "financial-modeling",
+      "label": "Financial Modeling",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        },
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ]
+    },
+    {
+      "id": "product-strategy",
+      "label": "Product Strategy",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "go-to-market",
+      "label": "Go-to-Market Strategy",
+      "aliases": [
+        "GTM",
+        "go-to-market"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "ui-ux-research",
+      "label": "UI/UX Research",
+      "aliases": [
+        "UX research"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "user-research",
+      "label": "User Research",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "stakeholder-management",
+      "label": "Stakeholder Management",
+      "aliases": [
+        "stakeholder engagement"
+      ],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "cross-functional-collaboration",
+      "label": "Cross-functional Collaboration",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "technical-writing",
+      "label": "Technical Writing",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "mentorship",
+      "label": "Mentorship",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": true,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "quality-control",
+      "label": "Quality Control",
+      "aliases": [
+        "QC"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "canva",
+      "label": "Canva",
+      "aliases": [],
+      "category": "tool",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-office-365",
+      "label": "Microsoft Office 365",
+      "aliases": [
+        "Microsoft 365",
+        "MS Office",
+        "Office 365"
+      ],
+      "category": "tool",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "pitch-deck-development",
+      "label": "Pitch Deck Development",
+      "aliases": [
+        "pitch decks",
+        "investor decks"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "investor-readiness",
+      "label": "Investor Readiness",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "project-coordination",
+      "label": "Project Coordination",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        },
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "leadership",
+      "label": "Leadership",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[data-co-analyst-intern].responsibilities[1]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "data-analysis",
+      "label": "Data Analysis",
+      "aliases": [],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "data-cleaning-and-preprocessing",
+      "label": "Data Cleaning and Preprocessing",
+      "aliases": [
+        "data preprocessing",
+        "data wrangling"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "regression-analysis",
+      "label": "Regression Analysis",
+      "aliases": [],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "hypothesis-testing",
+      "label": "Hypothesis Testing",
+      "aliases": [
+        "significance testing",
+        "p-value analysis"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "presentations",
+      "label": "Presentations",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "presentation-design",
+      "label": "Presentation Design",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "batch-manufacturing-records",
+      "label": "Batch Manufacturing Records",
+      "aliases": [
+        "batch records",
+        "BMR"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "dispensing-compounding-and-packaging-processes",
+      "label": "Dispensing, Compounding, and Packaging Processes",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "packaging-quality-checks",
+      "label": "Packaging Quality Checks",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "technical-research-and-reporting",
+      "label": "Technical Research and Reporting",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "market-sizing",
+      "label": "Market Sizing",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "competitive-analysis",
+      "label": "Competitive Analysis",
+      "aliases": [
+        "competitive landscape analysis"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "user-personas",
+      "label": "User Personas",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "market-positioning",
+      "label": "Market Positioning",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "cash-flow-modeling",
+      "label": "Cash-Flow Modeling",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "valuation",
+      "label": "Valuation",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "funding-strategy",
+      "label": "Funding Strategy",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "fundraising",
+      "label": "Fundraising",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        },
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ]
+    },
+    {
+      "id": "prototyping",
+      "label": "Prototyping",
+      "aliases": [
+        "web-app prototyping"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "experiment-design",
+      "label": "Experiment Design",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "product-validation",
+      "label": "Product Validation",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "user-interviews",
+      "label": "User Interviews",
+      "aliases": [
+        "customer interviews"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[1]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "social-media",
+      "label": "Social Media",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "workshop-facilitation",
+      "label": "Workshop Facilitation",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "community-building",
+      "label": "Community Building",
+      "aliases": [],
+      "category": "soft",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "graphic-design",
+      "label": "Graphic Design",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "webpage-design",
+      "label": "Webpage Design",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "video-production",
+      "label": "Video Production",
+      "aliases": [
+        "B-roll"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "brand-aligned-communications",
+      "label": "Brand-Aligned Communications",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "r",
+      "label": "R",
+      "aliases": [],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "unix",
+      "label": "Unix",
+      "aliases": [
+        "Linux command line"
+      ],
+      "category": "technical",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "bioinformatics",
+      "label": "Bioinformatics",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "lean-entrepreneurship",
+      "label": "Lean Entrepreneurship",
+      "aliases": [
+        "lean startup"
+      ],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "design-strategy",
+      "label": "Design Strategy",
+      "aliases": [],
+      "category": "domain",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ],
+      "claimLimit": "Coursework or thesis only; not years of experience or hands-on work."
+    },
+    {
+      "id": "language-english",
+      "label": "English",
+      "aliases": [],
+      "category": "language",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "languages",
+          "kind": "profile"
+        }
+      ],
+      "claimLimit": "Proficiency level is not stated."
+    },
+    {
+      "id": "microsoft-word",
+      "label": "Microsoft Word",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-excel",
+      "label": "Microsoft Excel",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-powerpoint",
+      "label": "Microsoft PowerPoint",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-outlook",
+      "label": "Microsoft Outlook",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-teams",
+      "label": "Microsoft Teams",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-onenote",
+      "label": "Microsoft OneNote",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-onedrive",
+      "label": "Microsoft OneDrive",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-sharepoint",
+      "label": "Microsoft SharePoint",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-forms",
+      "label": "Microsoft Forms",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-access",
+      "label": "Microsoft Access",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "parent": "microsoft-office-365",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "microsoft-visio",
+      "label": "Microsoft Visio",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "evidence": []
+    },
+    {
+      "id": "microsoft-project",
+      "label": "Microsoft Project",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Microsoft Office apps",
+      "evidence": []
+    },
+    {
+      "id": "adobe-photoshop",
+      "label": "Adobe Photoshop",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-illustrator",
+      "label": "Adobe Illustrator",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-indesign",
+      "label": "Adobe InDesign",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-premiere-pro",
+      "label": "Adobe Premiere Pro",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-after-effects",
+      "label": "Adobe After Effects",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-lightroom",
+      "label": "Adobe Lightroom",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-acrobat-pro",
+      "label": "Adobe Acrobat Pro",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-audition",
+      "label": "Adobe Audition",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-express",
+      "label": "Adobe Express",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-xd",
+      "label": "Adobe XD",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-animate",
+      "label": "Adobe Animate",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-dreamweaver",
+      "label": "Adobe Dreamweaver",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-media-encoder",
+      "label": "Adobe Media Encoder",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adobe-firefly",
+      "label": "Adobe Firefly",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Adobe apps",
+      "parent": "adobe-creative-suite",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "google-workspace-docs-sheets-slides",
+      "label": "Google Workspace (Docs, Sheets, Slides)",
+      "aliases": [
+        "Google Docs",
+        "Google Sheets",
+        "Google Slides"
+      ],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": []
+    },
+    {
+      "id": "generative-ai-tools-claude-chatgpt",
+      "label": "Generative AI tools (Claude, ChatGPT)",
+      "aliases": [
+        "LLM tools"
+      ],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": []
+    },
+    {
+      "id": "prompt-engineering",
+      "label": "Prompt Engineering",
+      "aliases": [],
+      "category": "technical",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": []
+    },
+    {
+      "id": "crm-software",
+      "label": "CRM software",
+      "aliases": [],
+      "category": "tool",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "video-editing",
+      "label": "Video Editing",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "photography",
+      "label": "Photography",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Other tools",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "time-management",
+      "label": "Time Management",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "project-management",
+      "label": "Project Management",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "written-communication",
+      "label": "Written Communication",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "public-speaking",
+      "label": "Public Speaking",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "teamwork",
+      "label": "Teamwork",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        },
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "problem-solving",
+      "label": "Problem Solving",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": []
+    },
+    {
+      "id": "attention-to-detail",
+      "label": "Attention to Detail",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "adaptability",
+      "label": "Adaptability",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": []
+    },
+    {
+      "id": "critical-thinking",
+      "label": "Critical Thinking",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": []
+    },
+    {
+      "id": "organization-and-prioritization",
+      "label": "Organization and Prioritization",
+      "aliases": [],
+      "category": "soft",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Workplace skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        },
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "good-documentation-practices-gdp",
+      "label": "Good Documentation Practices (GDP)",
+      "aliases": [
+        "GDocP"
+      ],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "sop-adherence",
+      "label": "SOP Adherence",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "customer-discovery",
+      "label": "Customer Discovery",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "ux-design",
+      "label": "UX Design",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        },
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "wireframing",
+      "label": "Wireframing",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "design-thinking",
+      "label": "Design Thinking",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[state-university-bachelor-of-science-in-biology].responsibilities[0]",
+          "kind": "coursework"
+        }
+      ]
+    },
+    {
+      "id": "copywriting",
+      "label": "Copywriting",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "social-media-content-creation",
+      "label": "Social Media Content Creation",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "growth-marketing",
+      "label": "Growth Marketing",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "investor-relations",
+      "label": "Investor Relations",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "budgeting",
+      "label": "Budgeting",
+      "aliases": [],
+      "category": "domain",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[sidequest-labs-founder].responsibilities[0]",
+          "kind": "project"
+        }
+      ]
+    },
+    {
+      "id": "data-visualization",
+      "label": "Data Visualization",
+      "aliases": [],
+      "category": "technical",
+      "status": "UNVERIFIED",
+      "origin": "inferred",
+      "inResumeRegistry": false,
+      "confirmGroup": "Domain skills",
+      "evidence": [
+        {
+          "key": "experiences[acme-bio-quality-intern].responsibilities[0]",
+          "kind": "work"
+        }
+      ]
+    },
+    {
+      "id": "language-spanish",
+      "label": "Spanish",
+      "aliases": [],
+      "category": "language",
+      "status": "VERIFIED_FROM_SOURCE",
+      "origin": "resume",
+      "inResumeRegistry": false,
+      "evidence": [
+        {
+          "key": "languages",
+          "kind": "profile"
+        }
+      ],
+      "claimLimit": "Proficiency level is not stated."
+    }
+  ]
+}

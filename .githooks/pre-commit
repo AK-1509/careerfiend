@@ -1,0 +1,14 @@
+#!/bin/sh
+# CareerFiend pre-commit guard: never commit personal data or secrets.
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+blocked=$(printf '%s\n' "$staged" | grep -E '^private/|(^|/)\.env(\.local)?$|\.db$|\.db-journal$|credentials.*\.json$|token.*\.json$|\.pem$' || true)
+if [ -n "$blocked" ]; then
+  echo "pre-commit: refusing to commit personal data or secrets:" >&2
+  printf '  %s\n' $blocked >&2
+  exit 1
+fi
+if git diff --cached -U0 | grep -E '^\+' | grep -Eq '(sk-ant-[A-Za-z0-9_-]{10,}|ya29\.[A-Za-z0-9_-]{10,}|"refresh_token"\s*:\s*"1//|GOCSPX-[A-Za-z0-9_-]{10,})'; then
+  echo "pre-commit: the staged diff looks like it contains an API key or OAuth token." >&2
+  exit 1
+fi
+exit 0
