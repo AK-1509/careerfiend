@@ -2,16 +2,11 @@ import "server-only";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createAppContext, findAccount, tenantContext, type AccountRef, type AppContext } from "@careerfiend/core";
+import { findAccount, tenantContext, type AccountRef, type AppContext } from "@careerfiend/core";
+import { baseCtx } from "./base";
 import { authMisconfigured, readSession, SESSION_COOKIE, sessionMatchesPassword } from "@careerfiend/shared";
 
-const g = globalThis as unknown as { __cfBase?: AppContext };
-
-/** The process-wide base context: the shared accounts database (survives dev hot reloads). */
-export function baseCtx(): AppContext {
-  g.__cfBase ??= createAppContext();
-  return g.__cfBase;
-}
+export { baseCtx };
 
 /** The signed-in account for this request, or null (checked against the database, so deleted accounts and old passwords sign out). */
 export const currentAccount = cache(async (): Promise<AccountRef | null> => {

@@ -122,7 +122,10 @@ function afterReady(inner: AdapterFactory, ready: PromiseLike<void>): AdapterFac
   }) as AdapterFactory;
 }
 
-const pgliteInstances = new Map<string, PGlite>();
+// Process-wide (on globalThis): the desktop app runs the dashboard and the worker in one process,
+// and bundlers may load this module more than once; two PGlite instances on one folder would corrupt it.
+const gPg = globalThis as unknown as { __cfPglite?: Map<string, PGlite> };
+const pgliteInstances = (gPg.__cfPglite ??= new Map<string, PGlite>());
 const pgPools = new Map<string, pgPkg.Pool>();
 
 /** One connection pool per database URL, shared by every tenant on it (so tenants do not multiply connections). */

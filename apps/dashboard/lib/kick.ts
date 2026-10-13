@@ -2,6 +2,7 @@ import "server-only";
 import { after } from "next/server";
 import { loadConfig } from "@careerfiend/shared";
 import type { AppContext } from "@careerfiend/core";
+import { wakeDesktopWorker } from "./desktop-worker";
 
 /** Ask a hosted background endpoint to start (it returns at once and works in the background). */
 export async function pokeWorker(path = "/api/worker"): Promise<void> {
@@ -15,9 +16,11 @@ export async function pokeWorker(path = "/api/worker"): Promise<void> {
   }
 }
 
-/** Start the hosted worker after this request finishes (server actions, pages). */
+/** Start the worker after this request finishes (server actions, pages): hosted, a new run; desktop, wake the in-app loop. */
 export function kickWorker(): void {
-  if (loadConfig().CAREERFIEND_MODE === "hosted") after(pokeWorker);
+  const mode = loadConfig().CAREERFIEND_MODE;
+  if (mode === "hosted") after(pokeWorker);
+  else if (mode === "desktop") after(wakeDesktopWorker);
 }
 
 /** Start Project Recommendations work for one account: hosted, in its own function invocations; locally, after this request. */

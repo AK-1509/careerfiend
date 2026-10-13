@@ -2,7 +2,9 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["**/node_modules/**", "**/.next/**", "**/generated/**", "**/dist/**", "coverage/**", "private/**", "**/next-env.d.ts"] },
+  {
+    ignores: ["**/node_modules/**", "**/.next/**", "**/generated/**", "**/dist/**", "coverage/**", "private/**", "**/next-env.d.ts", "apps/desktop/server/**"],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -13,5 +15,11 @@ export default tseslint.config(
       "@typescript-eslint/no-non-null-assertion": "off",
       "no-empty": ["error", { allowEmptyCatch: true }],
     },
+  },
+  {
+    // The Electron main process is plain CommonJS.
+    files: ["**/*.cjs"],
+    languageOptions: { sourceType: "commonjs", globals: { require: "readonly", module: "writable", __dirname: "readonly" } },
+    rules: { "@typescript-eslint/no-require-imports": "off" },
   },
 );

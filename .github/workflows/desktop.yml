@@ -1,0 +1,62 @@
+# Builds the CareerFiend desktop app on Windows (.exe installer), macOS (.dmg,
+# Apple silicon and Intel) and Linux (.AppImage). Each build first runs the
+# desktop smoke test on that operating system. Pushing a tag like v0.1.0
+# attaches the installers to a GitHub Release; running it by hand
+# (Actions → Desktop app → Run workflow) keeps them as downloadable artifacts.
+name: Desktop app
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Set the app version from the tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm --prefix apps/desktop version "${GITHUB_REF_NAME#v}" --no-git-tag-version --allow-same-version
+      - name: Build the app's server
+        run: npm run desktop:server
+      - name: Smoke test the server as the app runs it
+        run: |
+          npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
+          npm run desktop:smoke
+      - name: Package the installer
+        env:
+          # Unsigned builds (see README): no code-signing certificate is configured.
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: |
+          npm --prefix apps/desktop ci
+          npm --prefix apps/desktop run dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CareerFiend-${{ runner.os }}
+          path: |
+            apps/desktop/dist/*.exe
+            apps/desktop/dist/*.dmg
+            apps/desktop/dist/*.AppImage
+          if-no-files-found: error
+      - name: Attach to the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            apps/desktop/dist/*.exe
+            apps/desktop/dist/*.dmg
+            apps/desktop/dist/*.AppImage

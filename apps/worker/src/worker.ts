@@ -1,7 +1,8 @@
 import os from "node:os";
 import type { Page } from "playwright";
 import { CareerFiendError, randomId } from "@careerfiend/shared";
-import { openPersistent, openEphemeral, openServerless, renderHtml, type BrowserSession } from "@careerfiend/form-engine";
+import { openPersistent, openEphemeral, openServerless, openSystemBrowser, renderHtml, type BrowserSession } from "@careerfiend/form-engine";
+import { plainHtmlFetcher } from "@careerfiend/job-parser";
 import {
   acquireRunLock,
   applyRetention,
@@ -54,6 +55,8 @@ export interface WorkerOptions {
   ephemeralBrowser?: boolean;
   /** Headless serverless Chromium (the hosted worker in a Vercel function). */
   serverless?: boolean;
+  /** Desktop app: the computer's own Edge or Chrome, headless (no visible window, no saved profile). */
+  systemBrowser?: boolean;
   pollMs?: number;
   /** How long a leased item stays reserved (default 10 minutes). */
   leaseMs?: number;
@@ -77,10 +80,10 @@ const NEEDS_MS: Partial<Record<WorkKind, number>> = {
 export async function runCloudWorker(
   ctx: AppContext,
   budgetMs: number,
-  opts: { serverless?: boolean } = {},
+  opts: { serverless?: boolean; systemBrowser?: boolean } = {},
 ): Promise<{ ran: boolean; processed: number; more: boolean }> {
   const serverless = opts.serverless ?? true;
-  const worker = new Worker(ctx, { serverless, headless: serverless ? true : undefined, leaseMs: budgetMs + 60_000 });
+  const worker = new Worker(ctx, { serverless, systemBrowser: opts.systemBrowser, headless: serverless ? true : undefined, leaseMs: budgetMs + 60_000 });
   if (!(await acquireRunLock(ctx, worker.id, budgetMs + 60_000))) return { ran: false, processed: 0, more: false };
   try {
     return { ran: true, ...(await worker.runFor(budgetMs)) };
@@ -101,7 +104,7 @@ const TENANT_SLICE_MS = 190_000;
 export async function runAllTenants(
   base: AppContext,
   budgetMs: number,
-  opts: { serverless?: boolean } = {},
+  opts: { serverless?: boolean; systemBrowser?: boolean } = {},
 ): Promise<{ accounts: number; processed: number; more: boolean }> {
   const deadline = Date.now() + budgetMs;
   const accounts = await base.db.account.findMany({
@@ -142,17 +145,34 @@ export class Worker {
     private opts: WorkerOptions = {},
   ) {}
 
+  private browserFailed = false;
+
   private async session(): Promise<BrowserSession> {
+    if (this.browserFailed) throw new Error("No browser is available on this computer.");
     if (!this.browser) {
       const headless = this.opts.headless ?? this.ctx.config.BROWSER_HEADLESS === "true";
-      this.browser = this.opts.serverless
-        ? await openServerless()
-        : this.opts.ephemeralBrowser
-          ? await openEphemeral(headless)
-          : await openPersistent(this.ctx.config.paths.browserProfileDir, headless);
+      try {
+        this.browser = this.opts.serverless
+          ? await openServerless()
+          : this.opts.systemBrowser
+            ? await openSystemBrowser()
+            : this.opts.ephemeralBrowser
+              ? await openEphemeral(headless)
+              : await openPersistent(this.ctx.config.paths.browserProfileDir, headless);
+      } catch (err) {
+        this.browserFailed = true;
+        this.ctx.logger.warn("worker.no_browser", { error: err });
+        throw err;
+      }
     }
     return this.browser;
   }
+
+  /** Listing pages: rendered in the browser when there is one, else read over plain HTTP. */
+  private readonly renderOrFetch = async (url: string) => {
+    const session = await this.session().catch(() => null);
+    return session ? renderHtml(session, url) : plainHtmlFetcher(url);
+  };
 
   readonly pages: PageProvider = {
     page: async (id) => {
@@ -297,7 +317,7 @@ export class Worker {
     await this.scheduleRecurring().catch((err) => this.ctx.logger.warn("worker.schedule_failed", { error: err }));
     await importProfileIfEmpty(this.ctx);
     // Listing pages that need JavaScript are rendered in this run's browser (started only if needed).
-    this.ctx.fetchers = { ...(this.ctx.fetchers ?? {}), html: async (url) => renderHtml(await this.session(), url) };
+    this.ctx.fetchers = { ...(this.ctx.fetchers ?? {}), html: this.renderOrFetch };
     let processed = 0;
     while (!this.stopping && deadline - Date.now() > 30_000 && (await this.runOnce(deadline - Date.now()))) processed++;
     return { processed, more: (await this.dueCount()) > 0 };
@@ -310,7 +330,7 @@ export class Worker {
     this.ctx.logger.info("worker.started", { count: rec.released, status: `uncertain=${rec.uncertain}` });
     if (this.opts.ephemeralBrowser !== true) {
       // Listing pages that need JavaScript are rendered in the same browser.
-      this.ctx.fetchers = { ...(this.ctx.fetchers ?? {}), html: async (url) => renderHtml(await this.session(), url) };
+      this.ctx.fetchers = { ...(this.ctx.fetchers ?? {}), html: this.renderOrFetch };
     }
     let lastRecurring = 0;
     // Back off while idle so a hosted database (Neon) can scale to zero between bursts.

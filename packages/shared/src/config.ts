@@ -59,8 +59,11 @@ export const ConfigSchema = z.object({
   DATABASE_URL: z.preprocess(emptyToUndefined, z.string().optional()),
   /** Non-pooled URL for migrations (Neon "unpooled"); falls back to DATABASE_URL. */
   DATABASE_URL_DIRECT: z.preprocess(emptyToUndefined, z.string().optional()),
-  /** "local" (one computer: dashboard + worker), "hosted" (Vercel: dashboard and bounded worker runs, no local files). */
-  CAREERFIEND_MODE: z.preprocess(emptyToUndefined, z.enum(["local", "hosted"]).default("local")),
+  /**
+   * "desktop" (the installable app: one process runs the dashboard and the worker on an embedded database),
+   * "local" (one computer: dashboard + worker processes), "hosted" (Vercel: dashboard and bounded worker runs, no local files).
+   */
+  CAREERFIEND_MODE: z.preprocess(emptyToUndefined, z.enum(["local", "hosted", "desktop"]).default("local")),
   /** "true": anyone can create an account. "false": sign-up is closed (existing accounts still sign in). */
   SIGNUPS_OPEN: z.preprocess(emptyToUndefined, z.enum(["true", "false"]).default("true")),
   /**

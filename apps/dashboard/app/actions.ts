@@ -106,7 +106,9 @@ export async function toggleWorker(f: FormData) {
 export async function runWorkerNowAction() {
   await requireSession();
   await attempt("/", async () => {
-    if ((await ctx()).config.CAREERFIEND_MODE !== "hosted") return "Start the worker on your computer with npm run worker.";
+    const mode = (await ctx()).config.CAREERFIEND_MODE;
+    if (mode === "desktop") return "Worker woken up. It works through the queue in the background.";
+    if (mode !== "hosted") return "Start the worker on your computer with npm run worker.";
     return "Worker started. It works through the queue in the background; refresh in a minute.";
   });
 }

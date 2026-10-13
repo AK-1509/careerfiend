@@ -4,6 +4,20 @@ Tailored résumés and cover letters for every job you apply to, for anyone. Upl
 
 This is the public, multi-account edition of a single-user job-application copilot. Each account's data lives in its own database schema, separate from everyone else's.
 
+## Install (no setup)
+
+Download the installer for your computer from the [**Releases**](../../releases) page, open it, and CareerFiend starts:
+
+| Computer                     | File                                                   | First launch                                                                                                                                                     |
+| ---------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Windows 10/11                | `CareerFiend-<version>-win-x64.exe`                    | Windows may say it "protected your PC" (the app is not code-signed yet): click **More info → Run anyway**. It installs for you only and adds a Start-menu entry. |
+| Mac (Apple silicon or Intel) | `CareerFiend-<version>-mac-arm64.dmg` / `-mac-x64.dmg` | Drag CareerFiend to Applications. The first time, **right-click it → Open → Open** (the app is not notarized yet).                                               |
+| Linux                        | `CareerFiend-<version>-linux-x86_64.AppImage`          | Make it executable (`chmod +x`), then run it.                                                                                                                    |
+
+Then create an account in the window that opens (it lives only on your computer) and follow the steps below. Nothing else to install: no database, no Node.js, no cloud account. Everything (your résumé, applications, documents and your model key, encrypted) stays in the app's data folder on your computer: `%APPDATA%\CareerFiend` on Windows, `~/Library/Application Support/CareerFiend` on a Mac, `~/.config/CareerFiend` on Linux. Links to job sites open in your normal browser; to read pages that need a browser, the app uses Microsoft Edge or Google Chrome if you have one, and otherwise reads pages directly.
+
+Prefer a website your friends can use too? See **Deploy** below.
+
 ## Using it
 
 1. **Create an account** (email + password).
@@ -35,7 +49,21 @@ Environment variables (see `.env.example`): `CAREERFIEND_MODE=hosted`, `DATABASE
 
 **Never change `APP_ENCRYPTION_KEY`** on a deployment with accounts: each account's stored model key is encrypted with a key derived from it.
 
-## Run it on your own computer
+## Build the desktop app yourself
+
+```bash
+npm install
+npm run desktop:server        # builds the app's server into apps/desktop/server
+npm run desktop:smoke         # optional: runs it the way the app does and walks through sign-up → PDF → link → answers
+npm run desktop:start         # opens it in Electron (development)
+npm run desktop:dist          # makes the installer for this operating system in apps/desktop/dist
+```
+
+Installers for all three systems are built by `.github/workflows/desktop.yml` on GitHub's Windows, macOS and Linux machines (each runs the smoke test first). To publish a release: push a tag such as `v0.1.0`; the installers are attached to that release. To sign the installers (no warning on first launch), add a code-signing certificate as described in the electron-builder documentation (`CSC_LINK`, `CSC_KEY_PASSWORD`, and Apple notarization variables) and remove `CSC_IDENTITY_AUTO_DISCOVERY` from the workflow.
+
+How it works: the app (Electron) runs the same server as the website on `127.0.0.1` only, in **desktop mode** (`CAREERFIEND_MODE=desktop`): an embedded database, the worker inside the same process, and its secrets (session secret and encryption key) created on first launch in the app's data folder.
+
+## Run it from source on your own computer
 
 Requirements: Node.js **22.12+**. Postgres is optional: without `DATABASE_URL` an embedded PGlite database is used (one folder per account under `private/data/tenants/`), but embedded databases allow one process at a time, so to run the dashboard and the worker together set `DATABASE_URL` to a Postgres server.
 

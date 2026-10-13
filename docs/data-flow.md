@@ -2,6 +2,10 @@
 
 Where each person's data lives, who can read it, and what leaves the deployment. "Operator" is whoever runs the deployment (their Vercel and Neon accounts).
 
+## Desktop app
+
+Everything below lives on the person's own computer, in the app's data folder (`%APPDATA%\CareerFiend`, `~/Library/Application Support/CareerFiend`, `~/.config/CareerFiend`): the embedded databases (`data/`), the server encryption key (`secret.key`) and session secret, generated documents and logs. The app listens on `127.0.0.1` only. Only the outbound requests listed under **Sent to other services** leave the computer.
+
 ## In the database
 
 The shared schema holds only accounts. Everything else belongs to one account and lives in that account's own tenant: a Postgres schema `t_<id>` (hosted: Neon), or a PGlite folder `private/data/tenants/t_<id>` when self-hosted without Postgres.

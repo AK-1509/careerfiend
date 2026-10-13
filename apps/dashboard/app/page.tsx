@@ -67,7 +67,9 @@ export default async function DailyQueue({ searchParams }: { searchParams: Promi
     runLockActive(c),
     failedIngest(c),
   ]);
-  const hosted = c.config.CAREERFIEND_MODE === "hosted";
+  // The desktop app runs its worker inside the app, like the hosted one runs by itself.
+  const desktop = c.config.CAREERFIEND_MODE === "desktop";
+  const hosted = c.config.CAREERFIEND_MODE === "hosted" || desktop;
   const alive = hosted ? running : workerAlive(c, beat);
   // Hosted: opening the queue with links waiting starts a worker run if none is going.
   if (hosted && waiting.length > 0 && !running) kickWorker();
@@ -275,8 +277,9 @@ export default async function DailyQueue({ searchParams }: { searchParams: Promi
                 <span className="small muted"> Last active {beat ? fmtDate(beat.at) : "never"}.</span>
               </p>
               <p className="small muted">
-                Runs in the cloud: it starts by itself when you add links or change something, when you open this page with links waiting, and on a schedule for
-                the watchlist.
+                {desktop
+                  ? "Runs inside this app while it is open: it starts by itself when you add links or change something. Close the app and it picks up where it left off next time."
+                  : "Runs in the cloud: it starts by itself when you add links or change something, when you open this page with links waiting, and on a schedule for the watchlist."}
               </p>
               <form action={runWorkerNowAction} className="row" style={{ marginBottom: "0.5rem" }}>
                 <button type="submit" className="primary">

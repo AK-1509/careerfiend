@@ -24,3 +24,8 @@ test-results/
 packages/db/generated/
 *.tsbuildinfo
 next-env.d.ts
+
+# Desktop app build output
+apps/desktop/server/
+apps/desktop/dist/
+apps/desktop/node_modules/

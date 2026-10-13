@@ -37,6 +37,35 @@ export async function openEphemeral(headless = true): Promise<BrowserSession & {
 }
 
 /**
+ * Desktop app: a headless browser the computer already has (Microsoft Edge is
+ * on every Windows computer; Chrome on most others), else Playwright's own
+ * Chromium if it was installed. Throws when none can start; callers then fall
+ * back to plain HTTP reading.
+ */
+export async function openSystemBrowser(): Promise<BrowserSession & { browser: Browser }> {
+  const attempts: { channel?: string }[] = [{ channel: "msedge" }, { channel: "chrome" }, {}];
+  let last: unknown;
+  for (const a of attempts) {
+    try {
+      const browser = await chromium.launch({ headless: true, ...a });
+      const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+      return {
+        browser,
+        context,
+        newPage: () => context.newPage(),
+        close: async () => {
+          await context.close();
+          await browser.close();
+        },
+      };
+    } catch (err) {
+      last = err;
+    }
+  }
+  throw new Error(`No browser could be started (tried Microsoft Edge, Google Chrome and Playwright's Chromium): ${(last as Error)?.message ?? last}`);
+}
+
+/**
  * Headless Chromium for serverless functions (Vercel): the @sparticuz/chromium
  * build, unpacked to /tmp on first use. Loaded lazily so nothing else pays for it.
  */
