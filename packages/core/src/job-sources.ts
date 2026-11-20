@@ -772,10 +772,36 @@ export async function requestSearchRun(ctx: AppContext): Promise<void> {
 
 export interface SourceRunStatus {
   at: string;
+  /** Postings the source returned (before matching), so a 0 can be told apart from a source that answered nothing. */
+  scanned?: number;
   /** Postings that matched the title (and location). */
   matched: number;
   added: number;
   note: string | null;
+  /** Written as a run goes, so the page can show a check in progress. Missing on statuses saved before this existed: done. */
+  state?: "waiting" | "checking" | "done";
+}
+
+/** A run that stopped mid-check (the app was closed) is not shown as running for ever. */
+const STALE_CHECK_MS = 10 * 60_000;
+
+/** Where a saved search's current check stands, from its stored status. */
+export function searchProgress(
+  s: { enabled: boolean; lastRunAt: Date | null; sources: string; status: string },
+  now: Date,
+): { running: boolean; done: number; total: number; current: string | null } {
+  const status = fromJson<Record<string, SourceRunStatus>>(s.status, {});
+  const entries = Object.entries(status);
+  const live = entries.filter(([, st]) => st.state === "waiting" || st.state === "checking");
+  const fresh = live.some(([, st]) => now.getTime() - new Date(st.at).getTime() < STALE_CHECK_MS);
+  const total = entries.length || fromJson<string[]>(s.sources, []).length;
+  if (live.length && fresh) {
+    const current = entries.find(([, st]) => st.state === "checking")?.[0] ?? null;
+    return { running: true, done: entries.filter(([, st]) => (st.state ?? "done") === "done").length, total, current };
+  }
+  // Saved but not yet picked up by the worker.
+  if (s.enabled && !s.lastRunAt && !entries.length) return { running: true, done: 0, total, current: null };
+  return { running: false, done: total, total, current: null };
 }
 
 const MAX_NEW_PER_SOURCE = 100;
@@ -799,8 +825,15 @@ export async function runSavedSearches(ctx: AppContext, opts: { deadline?: numbe
     if (opts.deadline && Date.now() > opts.deadline - 20_000) break;
     const titles = fromJson<string[]>(s.titles, []);
     const exclude = fromJson<string[]>(s.exclude, []);
+    const chosen = fromJson<string[]>(s.sources, []).filter((x) => allowed.has(x));
     const status: Record<string, SourceRunStatus> = {};
-    for (const source of fromJson<string[]>(s.sources, []).filter((x) => allowed.has(x))) {
+    // Progress is saved after every step, so the Job search page can show the check as it goes.
+    const save = () => ctx.db.savedSearch.update({ where: { id: s.id }, data: { status: toJson(status) } }).catch(() => undefined);
+    for (const source of chosen) status[source] = { at: ctx.now().toISOString(), matched: 0, added: 0, note: null, state: "waiting" };
+    await save();
+    for (const source of chosen) {
+      status[source] = { ...status[source]!, at: ctx.now().toISOString(), state: "checking" };
+      await save();
       const q: SearchQuery = { titles, location: s.location };
       const memoKey = source === "boards" ? "boards" : `${source}:${titles.join("|")}:${s.location}`;
       let result: ServiceResult;
@@ -808,7 +841,8 @@ export async function runSavedSearches(ctx: AppContext, opts: { deadline?: numbe
         if (!memo.has(memoKey)) memo.set(memoKey, source === "boards" ? boardPostings(ctx) : SERVICES[source as ServiceId](ctx, q, keys));
         result = await memo.get(memoKey)!;
       } catch (err) {
-        status[source] = { at: ctx.now().toISOString(), matched: 0, added: 0, note: (err as Error).message.slice(0, 200) };
+        status[source] = { at: ctx.now().toISOString(), matched: 0, added: 0, note: (err as Error).message.slice(0, 200), state: "done" };
+        await save();
         continue;
       }
       const matches = result.postings.filter((p) => p.title && p.url && titleMatches(p.title, titles, exclude) && locationMatches(p, s.location, s.remoteOnly));
@@ -818,7 +852,15 @@ export async function runSavedSearches(ctx: AppContext, opts: { deadline?: numbe
         if (await addLead(ctx, s.id, p)) n++;
       }
       added += n;
-      status[source] = { at: ctx.now().toISOString(), matched: matches.length, added: n, note: result.note };
+      status[source] = {
+        at: ctx.now().toISOString(),
+        scanned: result.postings.length,
+        matched: matches.length,
+        added: n,
+        note: result.note,
+        state: "done",
+      };
+      await save();
     }
     await ctx.db.savedSearch.update({ where: { id: s.id }, data: { status: toJson(status), lastRunAt: ctx.now() } });
     ran++;

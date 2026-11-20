@@ -112,19 +112,27 @@ export async function backfillPostedJobs(ctx: AppContext): Promise<{ jobs: numbe
 }
 
 /** Active bank entries with the evidence that backs them, for the matcher. */
-export async function loadBank(ctx: AppContext): Promise<BankEntry[]> {
+export async function loadBank(ctx: AppContext, opts: { forJobId?: string } = {}): Promise<BankEntry[]> {
   const rows = await ctx.db.bankedSkill.findMany({
     where: { status: "ACTIVE" },
     include: { transfers: { where: { score: { gte: TRANSFER_MIN } }, orderBy: { score: "desc" } } },
     orderBy: { createdAt: "asc" },
   });
-  return rows.map((r) => ({
-    id: r.id,
-    kind: r.kind as BankEntry["kind"],
-    label: r.label,
-    category: r.category as BankEntry["category"],
-    evidenceKeys: r.transfers.map((t) => (t.evidenceType === "GITHUB_REPO" ? `github:${t.evidenceRef}` : t.evidenceRef)),
-  }));
+  // Entries carry over to *later* listings. One banked only from the listing being scored would
+  // confirm itself: every listing would match 100% and its own keywords would land on its résumé.
+  const fromOtherListings = (sources: string) => {
+    const list = fromJson<BankSource[]>(sources, []);
+    return !opts.forJobId || !list.length || list.some((x) => x.jobId !== opts.forJobId);
+  };
+  return rows
+    .filter((r) => fromOtherListings(r.sources))
+    .map((r) => ({
+      id: r.id,
+      kind: r.kind as BankEntry["kind"],
+      label: r.label,
+      category: r.category as BankEntry["category"],
+      evidenceKeys: r.transfers.map((t) => (t.evidenceType === "GITHUB_REPO" ? `github:${t.evidenceRef}` : t.evidenceRef)),
+    }));
 }
 
 export async function setBankedSkillStatus(ctx: AppContext, id: string, status: "ACTIVE" | "REMOVED"): Promise<string> {

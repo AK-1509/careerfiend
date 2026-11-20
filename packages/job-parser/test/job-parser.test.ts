@@ -6,6 +6,7 @@ import {
   blocksFromText,
   classifyItem,
   greenhouseBoard,
+  htmlToText,
   parseListingHtml,
   parseLocation,
   readListing,
@@ -154,5 +155,34 @@ describe("site policy and discovery (D6)", () => {
     expect(robotsAllows(robots, "/jobs/1")).toBe(true);
     expect(robotsAllows(robots, "/private/x")).toBe(false);
     expect(robotsAllows(robots, "/private/jobs/1")).toBe(true);
+  });
+});
+
+describe("section headings in listing HTML", () => {
+  // Trimmed from a live Himalayas listing (November 2026): before, every item after
+  // "About the Role" was read as a duty, so no skills counted and the match showed 0%.
+  const html = `<h3>About Everglade Works</h3><p>Everglade Works is a tech company focused on data.</p>
+    <h3>About the Role</h3><p>We are looking for an experienced Data Analyst to join our growing team.</p>
+    <h3>What You'll Be Doing</h3><ul><li>Write SQL queries to extract and manipulate data</li><li>Build dashboards in Tableau</li></ul>
+    <h3>You'll Excel in This Role If You</h3><ul><li>Are proficient in SQL, with experience writing complex queries</li>
+    <li>Are highly skilled in Excel (pivot tables, v-lookups)</li><li>Bonus: Experience with Python or R for data analysis</li></ul>
+    <h3>Whats In It for You</h3><h3>Health &amp; Well-being</h3><ul><li>Comprehensive health, dental, and vision coverage</li></ul>
+    <h3>Technical tools</h3><ul><li>Laptop and monitor allowance</li></ul>`;
+  const reqs = splitRequirements(blocksFromText(htmlToText(html)), "job");
+  const cat = (text: string) => reqs.find((r) => r.text.startsWith(text))?.category;
+
+  it("reads each heading as a section, whatever its wording", () => {
+    expect(cat("Write SQL queries")).toBe("responsibility");
+    expect(cat("Are proficient in SQL")).toBe("required");
+    expect(cat("Are highly skilled in Excel")).toBe("required");
+    expect(cat("Bonus: Experience with Python")).toBe("preferred");
+    expect(cat("Comprehensive health")).toBe("logistics");
+    expect(cat("Everglade Works is a tech company")).toBe("logistics");
+    // Headings are not items.
+    expect(reqs.some((r) => /^What You'll Be Doing/.test(r.text))).toBe(false);
+  });
+
+  it("a heading that names no section stays in the section it is in", () => {
+    expect(cat("Laptop and monitor allowance")).toBe("logistics");
   });
 });

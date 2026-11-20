@@ -35,6 +35,10 @@ export function htmlToText(html: string): string {
     if (t) out.push(t);
     line = "";
   };
+  const markHeading = () => {
+    const t = collapseWhitespace(line);
+    if (t && t.length <= 80 && !/[:.!?]$/.test(t)) line = `${t}:`;
+  };
   const walk = (node: AnyNode) => {
     if (node.type === "text") {
       line += (node as unknown as { data: string }).data;
@@ -55,11 +59,18 @@ export function htmlToText(html: string): string {
     const isStrongLine = (tag === "strong" || tag === "b") && !line.trim();
     if (BLOCK_TAGS.has(tag) || isHeading) flush();
     el.children.forEach(walk);
-    if (BLOCK_TAGS.has(tag) || isHeading) flush();
+    if (isHeading) {
+      // A real heading stays a heading in the text ("What You'll Be Doing:"), whatever its wording.
+      markHeading();
+      flush();
+    } else if (BLOCK_TAGS.has(tag)) flush();
     else if (isStrongLine) {
       // "<p><strong>Requirements</strong></p>" → heading line
       const t = collapseWhitespace(line);
-      if (t && t.length < 80) flush();
+      if (t && t.length < 80) {
+        markHeading();
+        flush();
+      }
     }
   };
   const root = $("body").length ? $("body").get(0)! : $.root().get(0)!;

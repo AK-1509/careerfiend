@@ -4,12 +4,15 @@ import { collapseWhitespace, stableId, type DegreeLevel, type Requirement, type 
 const HEADING_RULES: { re: RegExp; category: RequirementCategory }[] = [
   { re: /(preferred|nice[- ]to[- ]have|bonus|plus(es)?\b|desired|pluses|ideal(ly)?|extra credit|good to have)/i, category: "preferred" },
   {
-    re: /(requirement|qualification|what you('|’)ll (need|bring)|who you are|what we('|’)re looking for|must[- ]have|you (have|bring|should have)|skills|about you|experience|minimum|basic)/i,
+    re: /(requirement|qualification|what you('|’)ll (need|bring)|who you are|what we('|’)re (looking|seeking) for|must[- ]have|you (have|bring|should have)|skills|about you|experience|minimum|basic|you('|’)?ll (excel|thrive|succeed)|(excel|thrive|succeed) (here|in this role)|(great|good|strong) fit|for you if|to be successful|what (it takes|makes you))/i,
     category: "required",
   },
-  { re: /(responsibilit|what you('|’)ll do|the role|your role|duties|day[- ]to[- ]day|in this role|you will|key tasks|impact)/i, category: "responsibility" },
   {
-    re: /(location|logistics|schedule|hours|travel|benefits|compensation|salary|pay|perks|work environment|physical|eeo|equal opportunity|about (us|the company)|why join)/i,
+    re: /(responsibilit|what you('|’)ll (do|own|build|work on)|you('|’)ll be (doing|working on)|the role|your role|duties|day[- ]to[- ]day|in this role|you will|key tasks|impact)/i,
+    category: "responsibility",
+  },
+  {
+    re: /(location|logistics|schedule|hours|travel|benefits|compensation|salary|pay|perks|work environment|physical|eeo|equal opportunity|about (us|the company)|^about\b|why join|in it for you|what we offer|we offer|career growth|growth (&|and) development|well-?being|health|work[- ]life|time off|how to apply|our (values|culture|mission))/i,
     category: "logistics",
   },
 ];
@@ -123,8 +126,11 @@ function isBoilerplate(item: string): boolean {
 export function splitRequirements(blocks: TextBlock[], jobKey: string): Requirement[] {
   const out: Requirement[] = [];
   let n = 0;
+  let section: RequirementCategory | null = null;
   for (const block of blocks) {
-    const headingCategory = block.heading ? classifyHeading(block.heading) : null;
+    // A heading that names no section ("Technical tools" under "Requirements") stays in the section it is in.
+    const headingCategory: RequirementCategory | null = block.heading ? (classifyHeading(block.heading) ?? section) : null;
+    section = headingCategory;
     for (const raw of block.items) {
       const text = collapseWhitespace(raw);
       if (text.length < 3 || isBoilerplate(text)) continue;

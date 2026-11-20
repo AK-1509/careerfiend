@@ -134,6 +134,21 @@ describe("skill bank (listings you post)", () => {
     expect(rows.find((x) => x.text === "Experience with Kubernetes")!.status).not.toBe("TRANSFERABLE");
   });
 
+  it("a listing never counts its own banked skills (no self-confirmed 100%, no keywords it alone supplied)", async () => {
+    const { c } = await env();
+    const r = await ingestParsed(c, POSTED(), { endorse: true });
+    const own = await c.db.requirementMatch.findMany({ where: { jobId: r.jobId } });
+    expect(own.filter((x) => x.status === "TRANSFERABLE")).toHaveLength(0);
+    expect((await loadBank(c, { forJobId: r.jobId })).some((b) => b.label === "Looker")).toBe(false);
+    // The same entries still carry over to every other listing.
+    expect((await loadBank(c, { forJobId: "job_other" })).some((b) => b.label === "Looker")).toBe(true);
+    expect((await loadBank(c)).some((b) => b.label === "Looker")).toBe(true);
+    // Once a second listing names it too, it counts for both: each has another listing behind it.
+    const second = await ingestParsed(c, listing("Fabrikam", { Requirements: ["3+ years of experience with Looker"] }), { endorse: true });
+    expect((await loadBank(c, { forJobId: r.jobId })).some((b) => b.label === "Looker")).toBe(true);
+    expect((await loadBank(c, { forJobId: second.jobId })).some((b) => b.label === "Looker")).toBe(true);
+  });
+
   it("links banked skills to résumé facts and GitHub projects; removal stops them counting", async () => {
     const { c, calls } = await env();
     await ingestParsed(c, POSTED(), { endorse: true });

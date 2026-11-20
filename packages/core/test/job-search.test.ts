@@ -13,6 +13,7 @@ import {
   runSavedSearches,
   saveResume,
   saveSearch,
+  searchProgress,
   setSourceKey,
   signup,
   tailorLead,
@@ -167,6 +168,37 @@ describe("job search across sources", () => {
     const status = JSON.parse((await t.db.savedSearch.findFirstOrThrow()).status) as Record<string, { note: string | null; added: number }>;
     expect(status.adzuna!.note).toMatch(/add your free Adzuna key/);
     expect(status.remoteok!.added).toBe(0);
+    expect((status.remoteok as { scanned?: number }).scanned).toBeGreaterThan(0); // it answered; nothing new matched
+  });
+
+  it("saves progress source by source, so a check can be watched while it runs", async () => {
+    const box: { t?: AppContext } = {};
+    const seen: { progress: ReturnType<typeof searchProgress>; states: Record<string, string | undefined> }[] = [];
+    const { http } = fakeHttp({
+      "https://remoteok.com/api": async () => {
+        const s = await box.t!.db.savedSearch.findFirstOrThrow();
+        const status = JSON.parse(s.status) as Record<string, { state?: string }>;
+        seen.push({ progress: searchProgress(s, new Date()), states: Object.fromEntries(Object.entries(status).map(([k, v]) => [k, v.state])) });
+        return new Response(JSON.stringify(FEEDS["https://remoteok.com/api"]));
+      },
+    });
+    const t = (box.t = await account(base(http), "a@example.com"));
+    await saveSearch(t, { titles: ["Data Analyst"], sources: ["himalayas", "remoteok", "remotive"] });
+    // Saved, not yet picked up: shown as starting.
+    expect(searchProgress(await t.db.savedSearch.findFirstOrThrow(), new Date())).toMatchObject({ running: true, done: 0, total: 3 });
+    await runSavedSearches(t);
+    // Mid-run, while Remote OK was being asked: Himalayas done, Remotive still waiting.
+    expect(seen[0]!.states).toEqual({ himalayas: "done", remoteok: "checking", remotive: "waiting" });
+    expect(seen[0]!.progress).toEqual({ running: true, done: 1, total: 3, current: "remoteok" });
+    const after = await t.db.savedSearch.findFirstOrThrow();
+    expect(searchProgress(after, new Date())).toMatchObject({ running: false });
+    // A run cut off mid-check (app closed) is not shown as running for ever.
+    const cut = {
+      ...after,
+      lastRunAt: null,
+      status: JSON.stringify({ himalayas: { at: "2026-01-01T00:00:00Z", matched: 0, added: 0, note: null, state: "checking" } }),
+    };
+    expect(searchProgress(cut, new Date()).running).toBe(false);
   });
 
   it("one request serves every account searching the same thing (shared cache)", async () => {

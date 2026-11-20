@@ -219,7 +219,7 @@ export async function ingestParsed(ctx: AppContext, parsed: ParsedListing, opts:
   const endorsed = !!opts.endorse;
   // A listing you chose feeds the skill bank first, so its skills carry over to later applications.
   const banked = endorsed ? await bankFromJob(ctx, jobId, job, skills, ai.labels) : null;
-  const m = matchJob(job, skills, { degreeLevel, aiMappings: ai.mappings, bank: await loadBank(ctx) });
+  const m = matchJob(job, skills, { degreeLevel, aiMappings: ai.mappings, bank: await loadBank(ctx, { forJobId: jobId }) });
 
   // Facts for your review only; none of them stops the application.
   const warnings = [...parsed.warnings.map((w) => ({ code: w.split(":")[0]!, message: w })), ...m.warnings];
@@ -254,7 +254,8 @@ export async function ingestParsed(ctx: AppContext, parsed: ParsedListing, opts:
       contentHash: parsed.contentHash,
       source: job.source,
       endorsed,
-      coverage: m.coverage,
+      // No skills could be read from the listing: not scored (shown as "—"), rather than a misleading 0%.
+      coverage: m.warnings.some((w) => w.code === "NO_REQUIREMENTS") ? null : m.coverage,
       gaps: toJson(m.gaps),
       warnings: toJson(warnings),
     },

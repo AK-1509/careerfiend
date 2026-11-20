@@ -173,7 +173,7 @@ export async function generateDocuments(ctx: AppContext, applicationId: string, 
 
   const src = await syncSource(ctx);
   const skills = await listSkills(ctx.db);
-  const bank = await loadBank(ctx);
+  const bank = await loadBank(ctx, { forJobId: app.jobId });
   const m = matchJob(job, skills, { degreeLevel: degreeLevelFrom(src.resume, ctx.now()), bank });
   const skillLabels = new Map(skills.map((s) => [s.id, s.label]));
   const ats = await tailorForAts(ctx, { job, src, skills, bank, results: m.results });

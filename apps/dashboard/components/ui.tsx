@@ -33,6 +33,7 @@ const TONE: Record<string, string> = {
   MATCHED: "ok",
   UNMATCHED: "warn",
   IGNORED: "muted",
+  RUNNING: "info",
 };
 
 export function Badge({ value, label }: { value: string; label?: string }) {

@@ -64,7 +64,8 @@ export default async function ApplicationPage({
       </h1>
       <Flash msg={sp.msg} error={sp.error} />
       <p className="muted">
-        {job.location.raw || "Location not stated"} · keyword match {pct(app.job.coverage)} · <a href={job.sourceUrl}>original listing</a>
+        {job.location.raw || "Location not stated"} · keyword match {app.job.coverage === null ? "not scored (no skills listed)" : pct(app.job.coverage)} ·{" "}
+        <a href={job.sourceUrl}>original listing</a>
         {job.applyUrl && (
           <>
             {" "}

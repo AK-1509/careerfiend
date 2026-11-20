@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { fromJson } from "@careerfiend/db";
-import { availableSources, leadAction, leadSourceLabel, listLeads, sourceInfo, sourceKeyStatus, type SourceRunStatus } from "@careerfiend/core";
+import { availableSources, leadAction, leadSourceLabel, listLeads, searchProgress, sourceInfo, sourceKeyStatus, type SourceRunStatus } from "@careerfiend/core";
 import { ctx } from "@/lib/ctx";
 import { fmtDate } from "@/lib/format";
 import { Badge, Empty, Flash } from "@/components/ui";
+import { AutoRefresh } from "@/components/auto-refresh";
 import {
   deleteSearchAction,
   leadStatusAction,
@@ -103,6 +104,10 @@ export default async function Searches({ searchParams }: { searchParams: Promise
   const sources = availableSources(c);
   const nameOf = new Map(searches.map((s) => [s.id, s.name]));
   const fresh = leads.filter((l) => l.status === "NEW").length;
+  const now = c.now();
+  const progress = new Map(searches.map((s) => [s.id, searchProgress(s, now)]));
+  const running = searches.filter((s) => progress.get(s.id)!.running);
+  const label = (src: string) => sourceInfo(src)?.label ?? src;
   return (
     <>
       <h1>Job search</h1>
@@ -128,8 +133,29 @@ export default async function Searches({ searchParams }: { searchParams: Promise
             </button>
           </form>
         </p>
+        {running.length > 0 && (
+          <div className="callout" role="status" aria-live="polite">
+            <AutoRefresh seconds={3} />
+            {running.map((s) => {
+              const p = progress.get(s.id)!;
+              return (
+                <p key={s.id} style={{ margin: 0 }}>
+                  <strong>Checking &quot;{s.name}&quot; now</strong>
+                  {p.current ? `: asking ${label(p.current)}` : ": starting"} ({p.done} of {p.total} sources done). Leads appear below as they are found; this
+                  page updates by itself.
+                </p>
+              );
+            })}
+          </div>
+        )}
         {leads.length === 0 ? (
-          <Empty>{searches.length ? "No leads yet. The first check runs within a minute or two of saving a search." : "Save a search below to start."}</Empty>
+          <Empty>
+            {!searches.length
+              ? "Save a search below to start."
+              : running.length
+                ? "No matches yet."
+                : "No new leads. The sources had nothing matching your titles; CareerFiend checks again every hour."}
+          </Empty>
         ) : (
           <ol className="answers">
             {leads.map((l) => {
@@ -202,58 +228,80 @@ export default async function Searches({ searchParams }: { searchParams: Promise
         <h2 id="searches-h">Your searches ({searches.length})</h2>
         {searches.map((s) => {
           const status = fromJson<Record<string, SourceRunStatus>>(s.status, {});
+          const p = progress.get(s.id)!;
+          const found = Object.values(status).reduce((n, st) => n + st.added, 0);
           return (
-            <details key={s.id} className="panel">
-              <summary>
-                <span className="entry-head">
-                  <strong>{s.name}</strong>
-                  <span className="small muted">
-                    {fromJson<string[]>(s.titles, []).join(" / ")}
-                    {s.location ? ` · ${s.location}` : ""}
-                    {s.remoteOnly ? " · remote only" : ""} · {s.lastRunAt ? `checked ${fmtDate(s.lastRunAt)}` : "first check pending"}
-                  </span>
-                  {!s.enabled && <Badge value="WARNING" label="Paused" />}
+            <div key={s.id} className="panel" aria-labelledby={`search-${s.id}`}>
+              <div className="entry-head">
+                <h3 id={`search-${s.id}`} style={{ margin: 0 }}>
+                  {s.name}
+                </h3>
+                <span className="small muted">
+                  {fromJson<string[]>(s.titles, []).join(" / ")}
+                  {s.location ? ` · ${s.location}` : ""}
+                  {s.remoteOnly ? " · remote only" : ""} ·{" "}
+                  {p.running
+                    ? `checking now (${p.done} of ${p.total} sources done)`
+                    : s.lastRunAt
+                      ? `last checked ${fmtDate(s.lastRunAt)}: ${found} new ${found === 1 ? "lead" : "leads"} · next check within the hour`
+                      : "not checked yet"}
                 </span>
-              </summary>
+                {!s.enabled && <Badge value="WARNING" label="Paused" />}
+              </div>
               {Object.keys(status).length > 0 && (
                 <div className="table-wrap">
                   <table>
+                    <caption className="sr-only">What each source returned for {s.name}</caption>
                     <thead>
                       <tr>
                         <th scope="col">Source</th>
-                        <th scope="col">Matching</th>
-                        <th scope="col">New</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Jobs read</th>
+                        <th scope="col">Matching your titles</th>
+                        <th scope="col">New leads</th>
                         <th scope="col">Note</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(status).map(([src, st]) => (
-                        <tr key={src}>
-                          <td>{sourceInfo(src)?.label ?? src}</td>
-                          <td>{st.matched}</td>
-                          <td>{st.added}</td>
-                          <td className="small muted">{st.note ?? "ok"}</td>
-                        </tr>
-                      ))}
+                      {Object.entries(status).map(([src, st]) => {
+                        const state = st.state ?? "done";
+                        return (
+                          <tr key={src}>
+                            <td>{label(src)}</td>
+                            <td>
+                              {state === "waiting" && <span className="muted">Waiting</span>}
+                              {state === "checking" && <Badge value="RUNNING" label="Checking…" />}
+                              {state === "done" && `Checked ${fmtDate(new Date(st.at))}`}
+                            </td>
+                            <td>{state === "done" ? (st.scanned ?? "–") : "–"}</td>
+                            <td>{state === "done" ? st.matched : "–"}</td>
+                            <td>{state === "done" ? st.added : "–"}</td>
+                            <td className="small muted">{st.note ?? ""}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               )}
-              <SearchForm s={s} sources={sources} keys={keys} />
-              <div className="row" style={{ marginTop: "0.5rem" }}>
-                <form action={toggleSearchAction}>
-                  <input type="hidden" name="id" value={s.id} />
-                  <input type="hidden" name="enabled" value={s.enabled ? "false" : "true"} />
-                  <button type="submit">{s.enabled ? "Pause" : "Resume"}</button>
-                </form>
-                <form action={deleteSearchAction}>
-                  <input type="hidden" name="id" value={s.id} />
-                  <button type="submit" className="danger">
-                    Delete search
-                  </button>
-                </form>
-              </div>
-            </details>
+              <details>
+                <summary>Edit, pause or delete this search</summary>
+                <SearchForm s={s} sources={sources} keys={keys} />
+                <div className="row" style={{ marginTop: "0.5rem" }}>
+                  <form action={toggleSearchAction}>
+                    <input type="hidden" name="id" value={s.id} />
+                    <input type="hidden" name="enabled" value={s.enabled ? "false" : "true"} />
+                    <button type="submit">{s.enabled ? "Pause" : "Resume"}</button>
+                  </form>
+                  <form action={deleteSearchAction}>
+                    <input type="hidden" name="id" value={s.id} />
+                    <button type="submit" className="danger">
+                      Delete search
+                    </button>
+                  </form>
+                </div>
+              </details>
+            </div>
           );
         })}
         <details className="panel" open={searches.length === 0}>
