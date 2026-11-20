@@ -90,7 +90,7 @@ export async function tenantContext(base: AppContext, account: AccountRef, opts:
       browserProfileDir: path.join(p.browserProfileDir, account.tenant),
     },
   };
-  const partial: AppContext = { ...base, db, config, key: keyFn, account, ai: new NullProvider() };
+  const partial: AppContext = { ...base, db, shared: base.shared ?? base.db, config, key: keyFn, account, ai: new NullProvider() };
   partial.ai = await loadLmProvider(partial);
   return partial;
 }

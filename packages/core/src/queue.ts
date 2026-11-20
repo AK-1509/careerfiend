@@ -12,9 +12,20 @@ import type { Db } from "@careerfiend/db";
  * TRANSFER_MATCH: link new skill-bank entries to your résumé facts and GitHub projects.
  * DEMAND_MAP: rebuild the skills-to-demonstrate list from the jobs you added.
  * REGENERATE_DOCUMENTS: rebuild one application's résumé and cover letter without touching its state.
+ * SEARCH_POLL: run the saved job searches (job-search services and company boards) and add new leads.
  */
 export type WorkKind =
-  "INGEST_URL" | "PREPARE" | "SUBMIT" | "EMAIL_POLL" | "WATCHLIST_POLL" | "RETENTION" | "LOCAL_TASK" | "TRANSFER_MATCH" | "DEMAND_MAP" | "REGENERATE_DOCUMENTS";
+  | "INGEST_URL"
+  | "PREPARE"
+  | "SUBMIT"
+  | "EMAIL_POLL"
+  | "WATCHLIST_POLL"
+  | "RETENTION"
+  | "LOCAL_TASK"
+  | "TRANSFER_MATCH"
+  | "DEMAND_MAP"
+  | "REGENERATE_DOCUMENTS"
+  | "SEARCH_POLL";
 
 export const MAX_ATTEMPTS: Record<WorkKind, number> = {
   INGEST_URL: 3,
@@ -27,6 +38,7 @@ export const MAX_ATTEMPTS: Record<WorkKind, number> = {
   TRANSFER_MATCH: 2,
   DEMAND_MAP: 2,
   REGENERATE_DOCUMENTS: 2,
+  SEARCH_POLL: 2,
 };
 
 export async function enqueue(

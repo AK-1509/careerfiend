@@ -103,7 +103,7 @@ export const NormalizedJobSchema = z.object({
   applicationInstructions: z.string().nullable(),
   postedAt: z.string().nullable(),
   validThrough: z.string().nullable(),
-  source: z.enum(["fixture", "page", "greenhouse", "lever", "ashby", "import"]),
+  source: z.enum(["fixture", "page", "greenhouse", "lever", "ashby", "smartrecruiters", "recruitee", "workable", "personio", "search", "import"]),
   atsIdentifiers: z.record(z.string(), z.string()).default({}),
   expired: z.boolean().default(false),
 });

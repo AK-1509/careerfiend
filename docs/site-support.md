@@ -14,6 +14,24 @@ What CareerFiend reads and automates, and on what terms. Code: `packages/job-par
 | `linkedin.com`, `indeed.*`, `joinhandshake.com`                        | **Never**                                                                                     | **Never**                                    | Refused when pasted, with directions: open the listing on that site, follow it to the employer's application page, and send that link instead. These sites forbid automated reading |
 | `localhost`, private addresses                                         | Only `localhost`, and only with `ALLOW_LOCALHOST_TARGETS=true`                                | Same                                         | Fixture site for tests. Every other address must resolve to the public internet (`shared/net.ts`)                                                                                   |
 
+## Job search sources (checked November 2026)
+
+Read only through `politeFetch` (`packages/core/src/job-sources.ts`): a shared cache and per-host pace in the accounts schema, back-off on 429/503.
+
+| Source                                         | Endpoint                                      | Terms we keep                                                                                               | Cadence                       |
+| ---------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Remotive                                       | `remotive.com/api/remote-jobs` (whole feed)   | Credit + link back; at most 4 requests a day; no showing jobs behind a sign-up, so desktop/self-hosted only | 1 per 6 h, global             |
+| Himalayas                                      | `himalayas.app/jobs/api/search?q=`            | Credit + link; apply through Himalayas; drop expired jobs                                                   | 1 per title per 6 h           |
+| Jobicy                                         | `jobicy.com/api/v2/remote-jobs?tag=`          | Credit + direct link; apply buttons go to the Jobicy URL                                                    | 1 per title per 6 h           |
+| Remote OK                                      | `remoteok.com/api` (whole feed)               | Credit "Remote OK" with a followed link; no logo                                                            | 1 per 6 h, global             |
+| Arbeitnow                                      | `arbeitnow.com/api/job-board-api?page=`       | Link back; "please do not abuse"                                                                            | 2 pages per 6 h, global       |
+| Adzuna                                         | `api.adzuna.com/v1/api/jobs/{country}/search` | Each person's own key; credit Adzuna                                                                        | 1 per title per 12 h per key  |
+| USAJOBS                                        | `data.usajobs.gov/api/search`                 | Each person's own key; `User-Agent` = registered email                                                      | 1 per title per 12 h per key  |
+| Jooble                                         | `jooble.org/api/{key}` (POST)                 | Each person's own key                                                                                       | 1 per title per 12 h per key  |
+| SmartRecruiters, Recruitee, Workable, Personio | public career-site feeds of watched companies | vendor-published career-page feeds                                                                          | 1 per company per 3 h, global |
+
+Exact rate limits are not published by most of these services; the cadences above are deliberately conservative. Response shapes were checked against live responses (Remotive, Himalayas, Jobicy, Remote OK, Arbeitnow, SmartRecruiters); Workable returned 429 to the check and Recruitee/Personio were checked against their documentation only, so their parsers are covered by fixtures.
+
 ## Discovery endpoints (D6): terms check
 
 Recorded 2026-09-25. Only the public, unauthenticated GET endpoints are used; volume is a few requests per watched company per account every 6 hours.

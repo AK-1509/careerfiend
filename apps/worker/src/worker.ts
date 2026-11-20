@@ -25,6 +25,7 @@ import {
   performSubmission,
   pollEmail,
   pollWatchlist,
+  runSavedSearches,
   prepare,
   regenerateDocuments,
   preparedToday,
@@ -71,6 +72,7 @@ const NEEDS_MS: Partial<Record<WorkKind, number>> = {
   TRANSFER_MATCH: 60_000,
   DEMAND_MAP: 120_000,
   REGENERATE_DOCUMENTS: 120_000,
+  SEARCH_POLL: 90_000,
 };
 
 /**
@@ -202,7 +204,7 @@ export class Worker {
     const inWindow = withinWindow(this.ctx.now(), s.runWindow, this.ctx.config.DISPLAY_TIMEZONE);
     const underLimit = s.dailyLimit === null || (await preparedToday(this.ctx)) < s.dailyLimit;
     if (inWindow && underLimit) kinds.push("PREPARE");
-    kinds.push("EMAIL_POLL", "WATCHLIST_POLL", "RETENTION");
+    kinds.push("EMAIL_POLL", "WATCHLIST_POLL", "SEARCH_POLL", "RETENTION");
     return kinds;
   }
 
@@ -238,6 +240,9 @@ export class Worker {
       case "WATCHLIST_POLL":
         await pollWatchlist(this.ctx);
         return;
+      case "SEARCH_POLL":
+        await runSavedSearches(this.ctx, { deadline });
+        return;
       case "RETENTION":
         await applyRetention(this.ctx);
         return;
@@ -259,6 +264,10 @@ export class Worker {
     }
     if (await this.ctx.db.watchlistCompany.count({ where: { enabled: true } })) {
       await enqueue(this.ctx.db, "WATCHLIST_POLL", {}, { dedupeKey: "recurring:watchlist", runAt: new Date(now + 6 * 3600_000) });
+    }
+    // Saved job searches: every hour (each source still answers from the shared cache until its own period is up).
+    if (await this.ctx.db.savedSearch.count({ where: { enabled: true } })) {
+      await enqueue(this.ctx.db, "SEARCH_POLL", {}, { dedupeKey: "recurring:searches", runAt: new Date(now + 3600_000) });
     }
     if (this.ctx.config.RETENTION_DAYS) {
       await enqueue(this.ctx.db, "RETENTION", {}, { dedupeKey: "recurring:retention", runAt: new Date(now + 24 * 3600_000) });

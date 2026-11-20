@@ -289,7 +289,19 @@ describe.skipIf(!hasPg)("public dashboard", () => {
 
   it("every page renders with one h1 and labelled controls", async () => {
     const page = await alice.newPage();
-    for (const p of ["/", "/tracker", "/tracker?bucket=submitted", "/jobs", "/skills", "/bank", "/profile", "/watchlist", "/projects", "/settings"]) {
+    for (const p of [
+      "/",
+      "/tracker",
+      "/tracker?bucket=submitted",
+      "/jobs",
+      "/skills",
+      "/bank",
+      "/profile",
+      "/watchlist",
+      "/searches",
+      "/projects",
+      "/settings",
+    ]) {
       const res = await page.goto(`${url}${p}`);
       expect(res?.status(), p).toBe(200);
       expect(await page.locator("h1").count(), p).toBe(1);

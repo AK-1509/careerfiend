@@ -8,6 +8,14 @@ import {
   answerQuestion,
   approve,
   askQuestion,
+  deleteSearch,
+  requestSearchRun,
+  saveSearch,
+  setLeadStatus,
+  setSearchEnabled,
+  setSourceKey,
+  tailorLead,
+  type KeyedSource,
   assignEmail,
   removeAskedQuestion,
   changePassword,
@@ -48,6 +56,7 @@ import {
 import { decideSkill, parseResumeDate, setProfileValue, slugify, ANSWER_SPECS, type Experience, type Resume } from "@careerfiend/profile";
 import type { EmailClass } from "@careerfiend/shared";
 import { cookies } from "next/headers";
+import { ATS_KINDS, BOARD_SLUG_RE, type AtsKind } from "@careerfiend/job-parser";
 import { SESSION_COOKIE } from "@careerfiend/shared";
 import { baseCtx, ctx } from "@/lib/ctx";
 import { sessionCookieOptions } from "@/lib/cookie";
@@ -389,9 +398,9 @@ export async function generateProjectIdeasAction(f: FormData) {
 export async function addWatchAction(f: FormData) {
   await requireSession();
   await attempt("/watchlist", async () => {
-    const ats = str(f, "ats") as "greenhouse" | "lever" | "ashby";
-    if (!["greenhouse", "lever", "ashby"].includes(ats)) throw new Error("Choose Greenhouse, Lever or Ashby.");
-    if (!/^[A-Za-z0-9_.-]+$/.test(str(f, "boardSlug"))) throw new Error("Board slug may contain letters, digits, dot, dash and underscore only.");
+    const ats = str(f, "ats") as AtsKind;
+    if (!ATS_KINDS.some((k) => k.id === ats)) throw new Error("Choose the company's job board.");
+    if (!BOARD_SLUG_RE.test(str(f, "boardSlug"))) throw new Error("Board slug may contain letters, digits, dot, dash and underscore only.");
     await addWatchlistCompany(await ctx(), { ats, boardSlug: str(f, "boardSlug"), name: str(f, "name") });
     return "Company added.";
   });
@@ -685,4 +694,87 @@ export async function removeAskedQuestionAction(f: FormData) {
     await removeAskedQuestion(await ctx(), id, str(f, "fieldKey"));
     return "Question removed.";
   });
+}
+
+/* ---------------------------------------------------------- job search */
+
+const lines = (f: FormData, k: string) =>
+  String(f.get(k) ?? "")
+    .split(/[\n,]/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+
+export async function saveSearchAction(f: FormData) {
+  await requireSession();
+  await attempt("/searches", async () => {
+    const id = str(f, "id") || undefined;
+    await saveSearch(
+      await ctx(),
+      {
+        name: str(f, "name"),
+        titles: lines(f, "titles"),
+        location: str(f, "location"),
+        remoteOnly: f.get("remoteOnly") === "on",
+        exclude: lines(f, "exclude"),
+        sources: f.getAll("sources").map(String),
+      },
+      id,
+    );
+    return id ? "Search saved. Looking again now." : "Search saved. CareerFiend is looking now and keeps looking every hour.";
+  });
+}
+
+export async function toggleSearchAction(f: FormData) {
+  await requireSession();
+  await attempt("/searches", async () => {
+    const enabled = str(f, "enabled") === "true";
+    await setSearchEnabled(await ctx(), str(f, "id"), enabled);
+    return enabled ? "Search resumed." : "Search paused.";
+  });
+}
+
+export async function deleteSearchAction(f: FormData) {
+  await requireSession();
+  await attempt("/searches", async () => {
+    await deleteSearch(await ctx(), str(f, "id"));
+    return "Search and its leads deleted.";
+  });
+}
+
+export async function runSearchesNowAction() {
+  await requireSession();
+  await attempt("/searches", async () => {
+    await requestSearchRun(await ctx());
+    return "Checking now. Sources answer from their recent results until each one's own waiting time is up.";
+  });
+}
+
+export async function tailorLeadAction(f: FormData) {
+  await requireSession();
+  await attempt("/searches", async () => tailorLead(await ctx(), str(f, "leadId"), str(f, "url") || undefined));
+}
+
+export async function leadStatusAction(f: FormData) {
+  await requireSession();
+  const status = str(f, "status");
+  if (!["SEEN", "DISMISSED", "NEW"].includes(status)) back("/searches", { error: "Unknown action." });
+  await attempt("/searches", async () => {
+    await setLeadStatus(await ctx(), str(f, "leadId"), status as "SEEN" | "DISMISSED" | "NEW");
+    return status === "DISMISSED" ? "Lead dismissed." : "Saved.";
+  });
+}
+
+export async function saveSourceKeyAction(f: FormData) {
+  await requireSession();
+  const source = str(f, "source") as KeyedSource;
+  if (!["adzuna", "usajobs", "jooble"].includes(source)) back("/searches", { error: "Unknown source." });
+  await attempt("/searches", async () =>
+    setSourceKey(await ctx(), source, {
+      appId: str(f, "appId"),
+      appKey: String(f.get("appKey") ?? ""),
+      country: str(f, "country"),
+      key: String(f.get("key") ?? ""),
+      email: str(f, "email"),
+    }),
+  );
 }

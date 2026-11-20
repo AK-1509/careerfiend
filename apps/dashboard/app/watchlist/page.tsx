@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ATS_KINDS } from "@careerfiend/job-parser";
 import { ctx } from "@/lib/ctx";
 import { fmtDate } from "@/lib/format";
 import { Empty, Flash } from "@/components/ui";
@@ -11,22 +13,25 @@ export default async function Watchlist({ searchParams }: { searchParams: Promis
       <h1>Company watchlist</h1>
       <Flash msg={sp.msg} error={sp.error} />
       <p className="muted">
-        Discovery reads only public job-board endpoints (Greenhouse, Lever, Ashby). New postings appear on the Jobs page; nothing is applied to until you press
-        Apply, and nothing is filtered out for you. No LinkedIn or Indeed scraping.
+        Discovery reads only the companies&apos; public career-site feeds ({ATS_KINDS.map((k) => k.label).join(", ")}). New postings appear on the Jobs page;
+        nothing is applied to until you press Apply. A <Link href="/searches">job search</Link> with &quot;Company job boards&quot; turned on also looks through
+        these companies for your job title. No LinkedIn or Indeed scraping.
       </p>
       <form action={addWatchAction} className="panel">
         <div className="grid two" style={{ gap: "0.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}>
           <div>
             <label htmlFor="ats">Job board</label>
             <select id="ats" name="ats" required>
-              <option value="greenhouse">Greenhouse</option>
-              <option value="lever">Lever</option>
-              <option value="ashby">Ashby</option>
+              {ATS_KINDS.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.label} ({k.slugHelp})
+                </option>
+              ))}
             </select>
           </div>
           <div>
             <label htmlFor="boardSlug">Board slug</label>
-            <input id="boardSlug" name="boardSlug" type="text" required placeholder="e.g. acme (from boards.greenhouse.io/acme)" />
+            <input id="boardSlug" name="boardSlug" type="text" required placeholder="e.g. acme (the <slug> part of the career-site address)" />
           </div>
           <div>
             <label htmlFor="name">Company name</label>

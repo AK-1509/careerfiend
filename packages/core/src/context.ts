@@ -16,10 +16,12 @@ export interface AppContext {
   /** At-rest encryption key (lazy: resolved on first use). */
   key(): Buffer;
   now(): Date;
+  /** Public edition: the shared accounts database (job-source cache and pacing shared by every account). Absent: `db` is shared. */
+  shared?: Db;
   /** Public edition: the signed-in account whose tenant database `db` is (absent for the shared accounts context). */
   account?: { id: string; email: string; tenant: string };
   /** Injection points for tests and the fixture demo. */
-  fetchers?: { html?: HtmlFetcher; json?: Fetcher; atsBases?: AtsBases; ignoreRobots?: boolean; github?: Fetcher };
+  fetchers?: { html?: HtmlFetcher; json?: Fetcher; atsBases?: AtsBases; ignoreRobots?: boolean; github?: Fetcher; http?: typeof fetch };
 }
 
 export function createAppContext(overrides: Partial<AppContext> & { dbFile?: string } = {}): AppContext {

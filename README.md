@@ -77,6 +77,26 @@ npm run worker             # in a second terminal: reads listings and builds doc
 
 Self-hosting extras: `FORM_FILLING=on` makes the worker also fill each application form in a browser up to (never including) the final button, then wait for your review, a typed `APPROVE` and a separate typed `SUBMIT`. Gmail reply tracking appears when `GMAIL_OAUTH_CLIENT_ID` / `GMAIL_OAUTH_CLIENT_SECRET` are set (each account connects its own inbox; read and add-label only). Neither is recommended for a public deployment.
 
+## Job search (keeps looking for you)
+
+On the **Job search** page, save a job title (plus other titles that count, a location or remote-only, and words to skip). CareerFiend looks for it right away and then every hour, and lists new matches as **leads**. Nothing is applied to until you choose a lead: **Tailor my résumé** builds the documents from the listing (or, for sources that only give a summary, asks you to paste the application link first).
+
+It searches every source whose terms allow automated search:
+
+| Source                                                                                        | Covers                                     | Key                                                                                              |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| Company job boards (Greenhouse, Lever, Ashby, SmartRecruiters, Recruitee, Workable, Personio) | The companies on your **Watchlist**        | none                                                                                             |
+| Himalayas, Jobicy, Remote OK                                                                  | Remote jobs worldwide                      | none                                                                                             |
+| Arbeitnow                                                                                     | Europe (many in Germany)                   | none                                                                                             |
+| Remotive                                                                                      | Remote jobs (24 hours after posting)       | none; desktop app and self-hosted copies only (its terms rule out showing jobs behind a sign-up) |
+| Adzuna                                                                                        | Jobs from thousands of sites, 19 countries | your own free key                                                                                |
+| USAJOBS                                                                                       | US federal jobs                            | your own free key (sent with your registered email, as their API requires)                       |
+| Jooble                                                                                        | Jobs from many sites and countries         | your own free key                                                                                |
+
+**Not searched:** LinkedIn, Indeed, Glassdoor and Handshake, whose terms forbid automated access. Follow listings there to the employer's application page and paste that link.
+
+**Staying within each source's limits:** every request goes through one cache and one per-site pace shared by all accounts, so a source is asked once per period however many people search for the same title. Services are asked at most every 6 hours (Remotive's whole feed at most 4 times a day, as it asks), keyed services every 12 hours, company boards every 3 hours. A "too many requests" answer pauses that site for everyone (its Retry-After is honored, otherwise the pause doubles each time) and the last results are used meanwhile. Each lead credits and links to its source's own listing, and job-search services' leads are applied to through that listing, as their terms ask; CareerFiend never opens those pages itself.
+
 ## Project Recommendations
 
 With a model connected, the **Project Recommendations** tab suggests at least 5 small tools you could build quickly with AI coding help (a weekend to two weeks). Each one makes easier a task that several of your saved jobs ask for, so building it shows you can do that task. The model first maps the tasks your listings share to the one experience of yours that gives you a real angle on each (kept private); then it writes one-line ideas that never name that experience. Code keeps only ideas tied to real requirements of at least 2 saved jobs. Refresh: 5 new ideas, at most 3 refreshes per rolling 5 hours. The sidebar lists the skills your saved jobs ask for most, sorted into _not on your résumé yet_, _transferable_ and _already shown_.

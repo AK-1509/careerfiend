@@ -554,3 +554,77 @@ model ResumeUpload {
   method    String   @default("rules")
   createdAt DateTime @default(now())
 }
+
+/// Job search (per account): a title to keep looking for across every source that allows automated search.
+model SavedSearch {
+  id         String    @id
+  name       String
+  /// JSON string[]: the job title and other titles that count (any of them)
+  titles     String
+  /// Free text matched against the posting's location ("" = anywhere)
+  location   String    @default("")
+  remoteOnly Boolean   @default(false)
+  /// JSON string[]: a posting whose title contains any of these is skipped
+  exclude    String    @default("[]")
+  /// JSON string[]: source ids to search (see core/job-sources.ts)
+  sources    String    @default("[]")
+  enabled    Boolean   @default(true)
+  /// JSON Record<sourceId, {at, found, added, note}>: what each source did on the last run
+  status     String    @default("{}")
+  lastRunAt  DateTime?
+  createdAt  DateTime  @default(now())
+  leads      Lead[]
+}
+
+/// A posting a saved search found. Nothing is applied to until you act on it.
+model Lead {
+  id                  String      @id
+  searchId            String
+  search              SavedSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  /// Source id (remotive, adzuna, greenhouse...)
+  source              String
+  externalId          String
+  title               String
+  company             String
+  location            String      @default("")
+  remote              Boolean     @default(false)
+  /// The posting on the source (link back, as the source's terms ask)
+  url                 String
+  /// The employer's application page when the source gives one
+  applyUrl            String?
+  /// HTML or text as the source returned it
+  description         String      @default("")
+  /// false: the source returns only a snippet; the full listing must be opened
+  descriptionComplete Boolean     @default(false)
+  postedAt            DateTime?
+  compensation        String?
+  /// NEW | SEEN | TAILORED | DISMISSED
+  status              String      @default("NEW")
+  jobId               String?
+  foundAt             DateTime    @default(now())
+
+  @@unique([source, externalId])
+  @@index([searchId, status])
+}
+
+/// Shared (accounts schema): responses from job sources, reused by every account until they expire,
+/// so one fetch serves everyone who searches the same thing.
+model SourceCache {
+  key       String   @id
+  body      String
+  status    Int
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
+/// Shared (accounts schema): per-host request pacing, held across processes and serverless runs.
+model SourceThrottle {
+  host         String    @id
+  nextAt       DateTime
+  blockedUntil DateTime?
+  failures     Int       @default(0)
+  reason       String?
+  updatedAt    DateTime  @updatedAt
+}
