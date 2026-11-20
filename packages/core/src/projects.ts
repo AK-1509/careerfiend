@@ -6,6 +6,7 @@ import type { AppContext } from "./context";
 import { demandGaps } from "./demand";
 import { loadResumeSource } from "./resume-source";
 import { githubRepos } from "./skill-bank";
+import { leadJobInputs } from "./lead-postings";
 
 /**
  * Project Recommendations: small tools you could vibecode (build quickly with AI
@@ -83,7 +84,7 @@ function isCurrentIdea(i: unknown): i is ProjectIdea {
   return !!i && typeof (i as ProjectIdea).pitch === "string" && typeof (i as ProjectIdea).title === "string";
 }
 
-/** The jobs ideas are drawn from: active applications first, then the most recent other listings read. */
+/** The jobs ideas are drawn from: active applications first, then the most recent other listings read, then postings your searches found. */
 export async function projectQueue(ctx: AppContext): Promise<ProjectJobInput[]> {
   const active = await ctx.db.application.findMany({
     where: { state: { notIn: ["REJECTED", "CLOSED"] } },
@@ -100,7 +101,7 @@ export async function projectQueue(ctx: AppContext): Promise<ProjectJobInput[]> 
           orderBy: { createdAt: "desc" },
           take: MAX_JOBS - active.length,
         });
-  return [...active.map((a) => a.job), ...rest].map((j) => {
+  const jobs = [...active.map((a) => a.job), ...rest].map((j) => {
     const job = fromJson<NormalizedJob | null>(j.normalized, null);
     const requirements = (job?.requirements ?? [])
       .filter((r) => ["required", "preferred", "responsibility"].includes(r.category))
@@ -108,6 +109,9 @@ export async function projectQueue(ctx: AppContext): Promise<ProjectJobInput[]> 
       .map((r) => ({ id: r.id, text: r.text.slice(0, 300), category: r.category }));
     return { id: j.id, company: j.company, title: j.title, requirements };
   });
+  if (jobs.length >= MAX_JOBS) return jobs;
+  const leads = await leadJobInputs(ctx, { limit: MAX_JOBS - jobs.length, maxRequirements: MAX_REQUIREMENTS, maxText: 300 });
+  return [...jobs, ...leads];
 }
 
 function view(r: {
@@ -160,7 +164,7 @@ export async function requestProjectIdeas(ctx: AppContext, trigger: "initial" | 
     throw new ProjectIdeasError(projectsUnavailableReason(ctx) ?? "Project Recommendations is unavailable.");
   }
   const jobs = await projectQueue(ctx);
-  if (!jobs.length) throw new ProjectIdeasError("Add some jobs to the queue first: ideas are built from their requirements.");
+  if (!jobs.length) throw new ProjectIdeasError("Add a job link or save a job search first: ideas are built from what those postings ask for.");
   return ctx.db.$transaction(async (tx) => {
     if (await tx.projectIdeaRun.findFirst({ where: { status: { in: ACTIVE } } })) {
       throw new ProjectIdeasError("Ideas are already being generated. Wait for that run to finish.");

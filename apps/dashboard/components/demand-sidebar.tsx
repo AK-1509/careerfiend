@@ -12,7 +12,7 @@ const GROUPS = [
 
 const TONE = { not_shown: "WARNING", transferable: "TRANSFERABLE", shown: "COVERED" } as const;
 
-/** Skills and processes your queued jobs ask for, most-requested first, grouped by whether you already show them. */
+/** Skills and processes your jobs and job-search leads ask for, most-requested first, grouped by whether you already show them. */
 export function DemandSidebar({ view, building }: { view: DemandView | null; building: boolean }) {
   const total = view?.jobs.length ?? 0;
   return (
@@ -23,12 +23,12 @@ export function DemandSidebar({ view, building }: { view: DemandView | null; bui
       {building && <AutoRefresh seconds={15} />}
       {view ? (
         <p className="small muted">
-          What the {total} job{total === 1 ? "" : "s"} you added ask for, built {fmtDate(view.generatedAt)}
-          {view.method === "keywords" ? " from listing keywords (no AI provider)" : ""}.
-          {view.newJobs > 0 ? ` ${view.newJobs} job${view.newJobs === 1 ? "" : "s"} added since.` : ""}
+          What {total} posting{total === 1 ? "" : "s"} (the jobs you added and your job-search leads) ask for, built {fmtDate(view.generatedAt)}
+          {view.method === "keywords" ? " by counting listing keywords" : ""}.
+          {view.newJobs > 0 ? ` ${view.newJobs} new posting${view.newJobs === 1 ? "" : "s"} since.` : ""}
         </p>
       ) : (
-        <p className="small muted">{building ? "Building the list from every job you added…" : "Not built yet."}</p>
+        <p className="small muted">{building ? "Building the list from your jobs and job-search leads…" : "Not built yet."}</p>
       )}
       <form action={rebuildDemandAction} style={{ marginBottom: "0.5rem" }}>
         <button type="submit" disabled={building}>
@@ -64,7 +64,7 @@ export function DemandSidebar({ view, building }: { view: DemandView | null; bui
                       <span style={{ width: `${Math.max(4, Math.round(share * 100))}%` }} />
                     </div>
                     <div className="small">
-                      {item.jobIds.length} of {total} jobs
+                      {item.jobIds.length} of {total} postings
                       {companies.length ? (
                         <span className="muted">
                           {" "}

@@ -111,7 +111,7 @@ describe("credential check", () => {
   });
 });
 
-describe("bring-your-own model (public edition)", () => {
+describe("bring-your-own model", () => {
   it("builds the right client for each provider", () => {
     expect(createConnectedProvider({ provider: "anthropic", model: "claude-sonnet-5-5", apiKey: "k" })).toBeInstanceOf(AnthropicProvider);
     for (const p of LM_PRESETS.filter((x) => x.id !== "anthropic" && x.id !== "custom")) {

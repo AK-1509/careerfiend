@@ -12,7 +12,7 @@ import type { AppContext } from "./context";
 import { dropTenant, tenantName, type AccountRef } from "./tenancy";
 
 /**
- * Accounts (public edition). `ctx` here is the base context: its database is
+ * Accounts. `ctx` here is the base context: its database is
  * the shared accounts database. A wrong password counts against that account:
  * after 5 in a row, sign-in is refused for 15 minutes (doubling with each
  * further lock, up to 24 hours). State lives in the database so it holds

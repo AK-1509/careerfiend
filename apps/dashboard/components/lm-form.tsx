@@ -2,7 +2,7 @@ import { LM_PRESETS } from "@careerfiend/ai";
 import { connectLmAction, skipLmAction } from "@/app/actions";
 
 /**
- * The "connect your language model" prompt (public edition). Shown on the Daily
+ * The "connect your language model" prompt. Shown on the Daily
  * queue right after sign-up (with Skip) and on Settings.
  */
 export function LmConnectForm({ back, showSkip }: { back: "/" | "/settings"; showSkip: boolean }) {

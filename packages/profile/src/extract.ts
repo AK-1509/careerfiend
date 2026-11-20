@@ -3,7 +3,7 @@ import type { Experience, Resume } from "./resume-schema";
 
 /**
  * Terms that must never reach a document (matched against id, title and
- * organization). Empty in the public edition: each person decides what is on
+ * organization). Empty: each person decides what is on
  * their résumé by editing it. Kept as a hook for self-hosters.
  */
 export const EXCLUDED_TERMS: readonly string[] = [];
@@ -25,7 +25,7 @@ export interface ExtractedFact extends ExperienceFactData {
 }
 
 /**
- * Deterministic JSON → facts (D1). No model is involved.
+ * Deterministic JSON → facts. No model is involved.
  * Provenance keys:
  *   profile.<field>, profile.links[<n>]
  *   experiences[<id>].title|organization|location|startDate|endDate|url
@@ -112,7 +112,7 @@ export function resolveKey(resume: Resume, key: string): string | null {
 }
 
 /**
- * Every string value in resume.json, decoded. The résumé substring test (D2)
+ * Every string value in resume.json, decoded. The résumé substring test
  * checks generated text against this corpus, so JSON escaping cannot cause a
  * false failure and nothing outside a string value (keys, punctuation) counts.
  */

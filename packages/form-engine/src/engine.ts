@@ -235,8 +235,8 @@ export interface FormReading {
 }
 
 /**
- * Read an application form's questions without touching it (public edition:
- * the answers are shown for copy and paste). Loads the page with the submit
+ * Read an application form's questions without touching it (the answers are
+ * shown for copy and paste). Loads the page with the submit
  * guard installed, never types, selects or clicks; lists the questions of later
  * steps that are already on the page (hidden) too; if the page has no fields it
  * follows at most one "Apply" link on the same site.

@@ -68,7 +68,7 @@ export const ConfigSchema = z.object({
   SIGNUPS_OPEN: z.preprocess(emptyToUndefined, z.enum(["true", "false"]).default("true")),
   /**
    * "off" (default): CareerFiend tailors the résumé and cover letter and you apply on the employer's site.
-   * "on" (self-hosted only): the worker also fills the application form in a browser, as in the single-user edition.
+   * "on" (self-hosted only): the worker also fills the application form in a browser, up to (never including) the submit button.
    */
   FORM_FILLING: z.preprocess(emptyToUndefined, z.enum(["on", "off"]).default("off")),
   /** Largest résumé PDF accepted, in megabytes (Vercel caps request bodies at 4.5 MB). */

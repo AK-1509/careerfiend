@@ -124,7 +124,7 @@ export default async function Projects({ searchParams }: { searchParams: Promise
                 <button type="submit" className="primary" disabled={!!running || !!unavailable}>
                   Generate project ideas
                 </button>
-                <span className="small muted">Uses the jobs in your queue. Doesn&apos;t count as a refresh.</span>
+                <span className="small muted">Uses your jobs, then your job-search leads. Doesn&apos;t count as a refresh.</span>
               </form>
             )}
           </section>
@@ -132,7 +132,7 @@ export default async function Projects({ searchParams }: { searchParams: Promise
           {current ? (
             <>
               <p className="small muted">
-                {current.ideas.length} ideas from {fmtDate(current.finishedAt ?? current.createdAt)}, built from {current.jobs.length} queued job
+                {current.ideas.length} ideas from {fmtDate(current.finishedAt ?? current.createdAt)}, built from {current.jobs.length} posting
                 {current.jobs.length === 1 ? "" : "s"}.
               </p>
               {current.ideas.map((idea, i) => (

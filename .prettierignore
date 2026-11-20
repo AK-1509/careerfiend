@@ -6,12 +6,6 @@ package-lock.json
 private
 fixtures/listings
 fixtures/ats-pages
-BUILD-GUIDE.md
-profile/skills-inventory.json
-docs/phase0-decisions.md
-docs/implementation-plan.md
-KICKOFF.md
-profile/*.md
 fixtures/profile
 packages/db/src/migrations.generated.ts
 apps/desktop/server

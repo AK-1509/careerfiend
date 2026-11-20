@@ -59,14 +59,14 @@ export function checkEvidence(inventory: SkillsInventoryFile, resume: Resume): E
   return problems;
 }
 
-/** Find an existing skill by normalized label or alias (D4 de-duplication). */
+/** Find an existing skill by normalized label or alias (de-duplication). */
 export function findSkillByLabel<T extends Pick<InventorySkill, "label" | "aliases">>(skills: T[], label: string): T | undefined {
   const n = normalizeLabel(label);
   if (!n) return undefined;
   return skills.find((s) => normalizeLabel(s.label) === n || s.aliases.some((a) => normalizeLabel(a) === n));
 }
 
-/* ----------------------------------------------------------- checklist (D4) */
+/* ----------------------------------------------------------- checklist */
 
 export interface ChecklistLine {
   id: string;

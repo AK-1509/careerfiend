@@ -1,4 +1,4 @@
-# Data flow (public edition)
+# Data flow
 
 Where each person's data lives, who can read it, and what leaves the deployment. "Operator" is whoever runs the deployment (their Vercel and Neon accounts).
 

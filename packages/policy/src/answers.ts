@@ -104,7 +104,61 @@ export function chooseOption(desired: string, options: string[]): string | null 
   return contains.length === 1 ? contains[0]! : null;
 }
 
-const US_STATES: Record<string, string> = { CA: "California" };
+/** US state and territory codes, for "State" dropdowns that want the full name and for "Country". */
+const US_STATES: Record<string, string> = {
+  AL: "Alabama",
+  AK: "Alaska",
+  AZ: "Arizona",
+  AR: "Arkansas",
+  CA: "California",
+  CO: "Colorado",
+  CT: "Connecticut",
+  DE: "Delaware",
+  DC: "District of Columbia",
+  FL: "Florida",
+  GA: "Georgia",
+  HI: "Hawaii",
+  ID: "Idaho",
+  IL: "Illinois",
+  IN: "Indiana",
+  IA: "Iowa",
+  KS: "Kansas",
+  KY: "Kentucky",
+  LA: "Louisiana",
+  ME: "Maine",
+  MD: "Maryland",
+  MA: "Massachusetts",
+  MI: "Michigan",
+  MN: "Minnesota",
+  MS: "Mississippi",
+  MO: "Missouri",
+  MT: "Montana",
+  NE: "Nebraska",
+  NV: "Nevada",
+  NH: "New Hampshire",
+  NJ: "New Jersey",
+  NM: "New Mexico",
+  NY: "New York",
+  NC: "North Carolina",
+  ND: "North Dakota",
+  OH: "Ohio",
+  OK: "Oklahoma",
+  OR: "Oregon",
+  PA: "Pennsylvania",
+  RI: "Rhode Island",
+  SC: "South Carolina",
+  SD: "South Dakota",
+  TN: "Tennessee",
+  TX: "Texas",
+  UT: "Utah",
+  VT: "Vermont",
+  VA: "Virginia",
+  WA: "Washington",
+  WV: "West Virginia",
+  WI: "Wisconsin",
+  WY: "Wyoming",
+  PR: "Puerto Rico",
+};
 
 function need(field: FieldInput, question: string, sensitive: boolean, note: string | null = null): Proposal {
   return {
@@ -171,7 +225,12 @@ export function proposeValue(field: FieldInput, ctx: ProfileContext): Proposal {
   }
 
   const [first, ...rest] = ctx.name.split(/\s+/);
-  const [city, stateCode] = ctx.location.split(",").map((s) => s.trim());
+  // "Austin, TX", "Remote (Denver, CO)", "Hybrid - Austin, TX": the place is what follows a work-arrangement word.
+  const place = ctx.location
+    .replace(/^\s*(?:remote|hybrid|on-?site)\b\s*(?:[-–:]\s*)?/i, "")
+    .replace(/^\((.*)\)$/, "$1")
+    .trim();
+  const [city, stateCode] = place.split(",").map((s) => s.replace(/[()]/g, "").trim());
   const link = (re: RegExp) => ctx.links.find((l) => re.test(l.label) || re.test(l.url));
 
   switch (field.semanticType) {
@@ -213,7 +272,7 @@ export function proposeValue(field: FieldInput, ctx: ProfileContext): Proposal {
         ),
       );
     case "country":
-      // "Los Angeles, CA" is in the United States.
+      // "Austin, TX" is in the United States.
       return stateCode && US_STATES[stateCode] ? fit(field, ok("United States", "resume", ["profile.location"], 0.9, false)) : q("Country");
     case "location":
       return fit(field, ok(ctx.location, "resume", ["profile.location"], 0.9, false));

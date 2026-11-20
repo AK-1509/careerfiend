@@ -3,7 +3,7 @@ import { assertPublicUrl, CareerFiendError, decrypt, encrypt } from "@careerfien
 import type { AppContext } from "./context";
 
 /**
- * Bring-your-own language model (public edition). After sign-up each person is
+ * Bring-your-own language model. After sign-up each person is
  * asked to connect a model of their choice; it powers Project Recommendations
  * and sharpens tailoring (requirement splitting, job-specific bullets, cover
  * letters, reading a résumé PDF). They may skip: everything else runs on the

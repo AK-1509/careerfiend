@@ -74,7 +74,7 @@ export async function tempPostgres(): Promise<{ url: string; stop(): void } | nu
 
 /**
  * A throwaway folder holding content/resume.json and its version number: the
- * stand-in for the résumé a person saved (the public edition keeps it in the
+ * stand-in for the résumé a person saved (CareerFiend keeps it in the
  * database; `storeResume` puts it there).
  */
 export function makeResumeRepo(json: string = readFileSync(FIXTURE_RESUME, "utf8")): { dir: string; commit: string } {

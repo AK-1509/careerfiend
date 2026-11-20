@@ -393,7 +393,10 @@ export async function generateProjectIdeasAction(f: FormData) {
   } catch (err) {
     error = err instanceof ProjectIdeasError ? err.message : (err as Error).message;
   }
-  back("/projects", error ? { error } : { msg: "Researching the market for your queue. This takes 2 to 5 minutes; the page updates by itself." });
+  back(
+    "/projects",
+    error ? { error } : { msg: "Researching what your jobs and job-search leads ask for. This takes 2 to 5 minutes; the page updates by itself." },
+  );
 }
 
 /* ------------------------------------------------------------ watchlist */

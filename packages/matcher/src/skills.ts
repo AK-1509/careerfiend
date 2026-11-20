@@ -88,7 +88,7 @@ export interface SkillUse {
 const COURSEWORK_KINDS: EvidenceKind[] = ["coursework", "thesis"];
 
 /**
- * Deterministic policy (D4): status, scope and claim limit decide whether a
+ * Deterministic policy: status, scope and claim limit decide whether a
  * skill may satisfy a requirement. The model never decides this.
  */
 export function canSatisfy(skill: InventorySkill, req: Pick<Requirement, "depth" | "kind">): SkillUse {
@@ -183,7 +183,7 @@ function cleanCandidate(phrase: string): string | null {
     .replace(/\s+/g, " ")
     .trim();
   p = p
-    .replace(/^(?:the|a|an)\s+/i, "")
+    .replace(/^(?:the|a|an|other|any|similar)\s+/i, "")
     .replace(/\s+(?:tools?|software|platforms?|systems?|preferred|required|a plus|is a plus|or similar|or equivalent)$/i, "");
   const words = p.split(" ").filter(Boolean);
   if (!words.length || words.length > 4) return null;
@@ -215,8 +215,12 @@ export function unknownSkillCandidates<T extends Pick<InventorySkill, "id" | "la
     if (!mentions(text, tool) || known(tool) || [...out.keys()].some((k) => k.includes(n))) continue;
     out.set(n, tool);
   }
-  for (const m of text.matchAll(TRIGGERS)) {
-    for (const part of m[1]!.split(/,|\bor\b|\band\b|\//i)) {
+  // "e.g." and "i.e." would end the phrase at their period.
+  const plain = text.replace(/\b(?:e\.g|i\.e|etc)\b\.?/gi, " ");
+  for (const m of plain.matchAll(TRIGGERS)) {
+    // "BI tools (e.g., Tableau, Power BI, other CRM)": the examples in brackets are items of the list too.
+    const list = m[1]!.replace(/[()[\]]/g, ",");
+    for (const part of list.split(/,|;|\bor\b|\band\b|\blike\b|\bsuch as\b|\bincluding\b|\//i)) {
       const c = cleanCandidate(part);
       if (!c || known(c)) continue;
       const n = normalizeLabel(c);

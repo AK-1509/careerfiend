@@ -1,7 +1,7 @@
 import { CareerFiendError } from "@careerfiend/shared";
 
 /**
- * Public, documented job-board endpoints (D6). Read-only listing data; no
+ * Public, documented job-board endpoints. Read-only listing data; no
  * authentication, no private APIs. Base URLs are injectable for fixture tests.
  * Terms notes: docs/site-support.md.
  */

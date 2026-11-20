@@ -4,17 +4,17 @@ import { ResumeSchema, type Resume } from "./resume-schema";
 /** Name used in messages for the résumé document (resume.json shape). */
 export const RESUME_FILE = "your résumé";
 
-/** One version of the person's résumé, pinned (the public edition stores it; "commit" is its version, "v<N>"). */
+/** One version of the person's résumé, pinned (stored in the database; "commit" is its version, "v<N>"). */
 export interface ResumeSource {
   repoPath: string;
   commit: string;
   fileSha256: string;
-  /** `${commit}:${fileSha256}` (D1). */
+  /** `${commit}:${fileSha256}`. */
   checksum: string;
   /** Exact JSON text of this version. */
   rawText: string;
   resume: Resume;
-  /** Always false in the public edition (kept for the shared document code). */
+  /** Always false (kept for the shared document code). */
   workingTreeDiffers: boolean;
 }
 

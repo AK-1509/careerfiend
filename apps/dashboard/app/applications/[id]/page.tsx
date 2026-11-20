@@ -151,7 +151,7 @@ export default async function ApplicationPage({
         )
       )}
 
-      {/* ------------------------------------------------ answers to copy (public edition) */}
+      {/* ------------------------------------------------ answers to copy */}
       {sheet && <AnswerSheet applicationId={app.id} sheet={sheet} aiConnected={c.ai.available} />}
 
       {/* ------------------------------------------------ open questions */}

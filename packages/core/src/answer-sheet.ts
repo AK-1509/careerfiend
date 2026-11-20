@@ -19,11 +19,11 @@ import type { PageProvider } from "./prepare";
 import { loadResumeSource } from "./resume-source";
 
 /**
- * Answer sheet (public edition). CareerFiend does not fill application forms
+ * Answer sheet. CareerFiend does not fill application forms
  * for you; instead it reads the form's questions (opening the page, never
  * typing, selecting or clicking) and lists an answer for each one to copy and
- * paste. Answers come from the same policy that filled forms in the
- * single-user edition: your résumé, your saved answers on the Profile page, the
+ * paste. Answers come from the same policy the optional form filler uses
+ * (FORM_FILLING=on): your résumé, your saved answers on the Profile page, the
  * tailored cover letter, and, for open questions, a draft by your language
  * model that must cite your résumé lines. Answers are computed when shown, so
  * they follow your latest profile; only the questions and the model drafts are

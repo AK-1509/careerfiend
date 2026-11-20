@@ -26,7 +26,7 @@ const job = (name: string) =>
 
 const sources: [string, () => ResumeSource][] = [["fixture resume", () => readResumeSource(makeResumeRepo().dir)]];
 
-describe.each(sources)("verbatim résumé (D2): %s", (_name, load) => {
+describe.each(sources)("verbatim résumé: %s", (_name, load) => {
   it("every line is verbatim, fits one page, keeps Education", async () => {
     const src = load();
     const j = job("senior-title-entry-description.html");
@@ -34,7 +34,7 @@ describe.each(sources)("verbatim résumé (D2): %s", (_name, load) => {
     const build = await buildResume({ resume: src.resume, rawText: src.rawText, results: m.results, jobText: j.description, pageLimit: 1 });
     expect(build.pages).toBe(1);
     expect(checkVerbatim(build.lines, resumeStringCorpus(src.rawText), src.resume)).toEqual([]);
-    // D2 regression test: every bullet, the headline and every content span is an exact substring of the pinned file.
+    // Regression test: every bullet, the headline and every content span is an exact substring of the pinned file.
     const corpus = resumeStringCorpus(src.rawText);
     for (const line of build.lines) {
       if (line.style === "bullet" || line.style === "headline" || line.style === "name") {
@@ -86,7 +86,7 @@ describe("verbatim checker catches edits", () => {
   });
 });
 
-describe("cover letter (D3)", () => {
+describe("cover letter", () => {
   const allowed = new Map([
     ["experiences[a].responsibilities[0]", "Ran quality-control tests with 99.4% accuracy under GMP protocols."],
     ["experiences[b].responsibilities[4]", "Achieved a 3.4% traffic-conversion rate from more than 2,000 impressions."],

@@ -4,7 +4,7 @@ import type { AppContext } from "./context";
 import { ingestParsed } from "./ingest";
 
 /**
- * Authorized discovery (D6): a company watchlist read through public ATS
+ * Authorized discovery: a company watchlist read through public ATS
  * job-board endpoints. New postings are listed on the Jobs page for you to
  * look at; none is applied to until you press Apply. Nothing is filtered out
  * or judged: known listings are only de-duplicated by canonical URL.

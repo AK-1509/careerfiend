@@ -25,7 +25,7 @@ export type ApplicationState = z.infer<typeof ApplicationStateSchema>;
 
 /**
  * Every allowed transition. Anything not listed is rejected by
- * `assertTransition`. Follows BUILD-GUIDE.md with these explicit additions:
+ * `assertTransition`. Notable cases:
  * - preparation steps may fail or pause (NEEDS_INPUT) before FILLING;
  * - NEEDS_INPUT may return to GENERATING_DOCUMENTS (after a skill confirmation);
  * - APPROVED -> READY_FOR_REVIEW (an edit invalidates the approval);

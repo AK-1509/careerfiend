@@ -155,6 +155,16 @@ describe("answer policy", () => {
     expect(proposeValue(f("Do you have professional experience with R?", "skill_question", radio), ctx).reviewState).toBe("NEEDS_INPUT");
     expect(proposeValue(f("How many years of experience with GMP?", "skill_question"), ctx).reviewState).toBe("NEEDS_INPUT");
   });
+  it("city and state are read past a work arrangement: Remote (Denver, CO)", () => {
+    const remote = { ...ctx, location: "Remote (Denver, CO)" };
+    expect(proposeValue(f("City", "city"), remote).value).toBe("Denver");
+    expect(proposeValue(f("State", "state", { control: "select", options: ["Colorado", "Texas"] }), remote).value).toBe("Colorado");
+  });
+  it("state and country work for any US state, not only California", () => {
+    const tx = { ...ctx, location: "Austin, TX" };
+    expect(proposeValue(f("State", "state", { control: "select", options: ["Choose one", "Texas", "Oregon"] }), tx).value).toBe("Texas");
+    expect(proposeValue(f("Country", "country", { control: "select", options: ["Canada", "United States"] }), tx).value).toBe("United States");
+  });
   it("user answers win and never become verified facts elsewhere", () => {
     const withAnswer = { ...ctx, userAnswers: { "Phone:text": "555-0100" } };
     expect(proposeValue(f("Phone", "phone"), withAnswer)).toMatchObject({ value: "555-0100", source: "user-answer" });

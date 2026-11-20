@@ -1,5 +1,5 @@
 /**
- * Which sites CareerFiend may read and automate (D6, BUILD-GUIDE safety rules).
+ * Which sites CareerFiend may read and automate .
  * Details and terms notes live in docs/site-support.md.
  */
 

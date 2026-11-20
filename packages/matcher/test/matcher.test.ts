@@ -82,5 +82,8 @@ describe("evidence for tailoring", () => {
     expect(skillsMentioned("Microsoft Excel", all).map((s) => s.id)).toEqual(["microsoft-excel"]);
     expect(unknownSkillCandidates("Strong communication skills", all)).toEqual([]);
     expect(unknownSkillCandidates("Experience with Tableau or Power BI", all).sort()).toEqual(["Power BI", "Tableau"]);
+    // Examples in brackets and after "like" / "such as" are items too, never fragments such as "Azure)".
+    expect(unknownSkillCandidates("Familiarity with cloud platforms (e.g., AWS, GCP, Azure)", []).sort()).toEqual(["AWS", "Azure", "GCP"]);
+    expect(unknownSkillCandidates("Experience with tools such as Jira and Confluence", []).sort()).toEqual(["Confluence", "Jira"]);
   });
 });

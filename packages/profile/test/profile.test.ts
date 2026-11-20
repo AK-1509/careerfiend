@@ -28,7 +28,7 @@ import {
   testKey,
 } from "../../../tests/helpers";
 
-describe("resume source (D1)", () => {
+describe("resume source", () => {
   it("pins a résumé version and records version + sha256", () => {
     const repo = makeResumeRepo();
     const src = readResumeSource(repo.dir);
@@ -55,7 +55,7 @@ describe("resume source (D1)", () => {
     expect(ids2).toEqual(ids1);
   });
 
-  it("uses the D1 provenance key format", () => {
+  it("uses the provenance key format", () => {
     const repo = makeResumeRepo();
     const facts = extractFacts(readResumeSource(repo.dir).resume, "x");
     const keys = facts.map((f) => f.key);
@@ -95,14 +95,14 @@ describe("nothing leaks between imports", () => {
   });
 });
 
-describe("skills inventory (D4)", () => {
-  it("imports the kit inventory: 63 verified, 54 unverified", async () => {
+describe("skills inventory", () => {
+  it("imports the kit inventory: 32 verified, 17 unverified", async () => {
     const { db } = testDb();
     const r = await importInventory(db, loadInventoryFile(KIT_INVENTORY));
-    expect(r.inserted).toBe(117);
+    expect(r.inserted).toBe(49);
     const skills = await listSkills(db);
-    expect(skills.filter((s) => s.status === "VERIFIED_FROM_SOURCE")).toHaveLength(63);
-    expect(skills.filter((s) => s.status === "UNVERIFIED")).toHaveLength(54);
+    expect(skills.filter((s) => s.status === "VERIFIED_FROM_SOURCE")).toHaveLength(32);
+    expect(skills.filter((s) => s.status === "UNVERIFIED")).toHaveLength(17);
   });
 
   it("never promotes an UNVERIFIED skill without a user action", async () => {
@@ -135,7 +135,7 @@ describe("skills inventory (D4)", () => {
     const { db } = testDb();
     await importInventory(db, loadInventoryFile(KIT_INVENTORY));
     const md = readFileSync(KIT_CHECKLIST, "utf8");
-    expect(parseChecklist(md)).toHaveLength(54);
+    expect(parseChecklist(md)).toHaveLength(17);
     await expect(importChecklist(db, md)).rejects.toThrow(/looks unreviewed/);
     const edited = md
       .replace("- [ ] Microsoft Word <!-- microsoft-word -->", "- [x] Microsoft Word <!-- microsoft-word -->")
@@ -143,9 +143,9 @@ describe("skills inventory (D4)", () => {
     const r = await importChecklist(db, edited);
     expect(r.confirmed).toEqual(["microsoft-word"]);
     expect(r.unsure).toEqual(["microsoft-excel"]);
-    expect(r.rejected).toHaveLength(52);
+    expect(r.rejected).toHaveLength(15);
     expect((await db.skill.findUnique({ where: { id: "microsoft-excel" } }))?.status).toBe("UNVERIFIED");
-    expect((await db.skill.findUnique({ where: { id: "adobe-xd" } }))?.status).toBe("REJECTED_BY_USER");
+    expect((await db.skill.findUnique({ where: { id: "teamwork" } }))?.status).toBe("REJECTED_BY_USER");
     // Re-rendering keeps the decisions, and re-importing the rendered file is idempotent.
     const rendered = renderChecklist(await listSkills(db), await unsureSkillIds(db));
     expect(rendered).toMatch(/- \[x\] Microsoft Word <!-- microsoft-word -->/);
@@ -156,20 +156,20 @@ describe("skills inventory (D4)", () => {
   });
 });
 
-describe("user decisions travel only through the checklist (D4)", () => {
+describe("user decisions travel only through the checklist", () => {
   it("a fresh database applies recorded decisions only via the ticked checklist", async () => {
     const { db } = testDb();
     const inv = loadInventoryFile(KIT_INVENTORY);
     const decided = structuredClone(inv);
     decided.skills.find((s) => s.id === "microsoft-word")!.status = "CONFIRMED_BY_USER";
-    decided.skills.find((s) => s.id === "adobe-xd")!.status = "REJECTED_BY_USER";
+    decided.skills.find((s) => s.id === "teamwork")!.status = "REJECTED_BY_USER";
     const r = await importInventory(db, decided);
-    expect(r.pendingUserDecisions.sort()).toEqual(["adobe-xd", "microsoft-word"]);
+    expect(r.pendingUserDecisions.sort()).toEqual(["microsoft-word", "teamwork"]);
     expect((await db.skill.findUniqueOrThrow({ where: { id: "microsoft-word" } })).status).toBe("UNVERIFIED");
     const md = readFileSync(KIT_CHECKLIST, "utf8").replace("- [ ] Microsoft Word <!-- microsoft-word -->", "- [x] Microsoft Word <!-- microsoft-word -->");
     await importChecklist(db, md);
     expect((await db.skill.findUniqueOrThrow({ where: { id: "microsoft-word" } })).status).toBe("CONFIRMED_BY_USER");
-    expect((await db.skill.findUniqueOrThrow({ where: { id: "adobe-xd" } })).status).toBe("REJECTED_BY_USER");
+    expect((await db.skill.findUniqueOrThrow({ where: { id: "teamwork" } })).status).toBe("REJECTED_BY_USER");
     const ev = await db.skillStatusEvent.findMany({ where: { skillId: "microsoft-word", to: "CONFIRMED_BY_USER" } });
     expect(ev.map((e) => e.actor)).toEqual(["user:checklist"]);
   });

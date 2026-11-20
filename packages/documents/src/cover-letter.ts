@@ -3,7 +3,7 @@ import { collapseWhitespace, wordCount } from "@careerfiend/shared";
 import { mentionsExcluded } from "@careerfiend/profile";
 
 /**
- * Cover letter (D3): voice/structure from the job-application skill; facts
+ * Cover letter: voice/structure from the job-application skill; facts
  * only from resume.json facts and CONFIRMED_BY_USER skills. Every factual
  * sentence carries provenance keys; deterministic validation enforces it.
  */

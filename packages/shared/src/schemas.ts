@@ -6,7 +6,7 @@ export const SKILL_STATUSES = ["VERIFIED_FROM_SOURCE", "CONFIRMED_BY_USER", "UNV
 export const SkillStatusSchema = z.enum(SKILL_STATUSES);
 export type SkillStatus = z.infer<typeof SkillStatusSchema>;
 
-/** Only these statuses may count toward a match or fill a form field (D4). */
+/** Only these statuses may count toward a match or fill a form field. */
 export const USABLE_STATUSES: readonly SkillStatus[] = ["VERIFIED_FROM_SOURCE", "CONFIRMED_BY_USER"];
 export function isUsableStatus(status: string): boolean {
   return (USABLE_STATUSES as readonly string[]).includes(status);

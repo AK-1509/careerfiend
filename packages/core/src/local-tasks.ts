@@ -4,9 +4,8 @@ import { loadResumeSource, resumeRepoHead, resumeSourceConfigured } from "./resu
 import { enqueue } from "./queue";
 
 /**
- * Profile maintenance tasks. In the single-user edition these needed the
- * worker's computer (a git checkout, private files); in the public edition the
- * résumé lives in the database, so only re-extracting its facts is left.
+ * Profile maintenance tasks. The résumé lives in the database, so the only
+ * task is re-extracting its facts.
  */
 export type LocalTask = "reingest-resume";
 

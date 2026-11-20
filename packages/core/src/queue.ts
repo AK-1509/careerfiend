@@ -10,7 +10,7 @@ import type { Db } from "@careerfiend/db";
 /**
  * LOCAL_TASK: profile maintenance (re-extract the facts of the stored résumé).
  * TRANSFER_MATCH: link new skill-bank entries to your résumé facts and GitHub projects.
- * DEMAND_MAP: rebuild the skills-to-demonstrate list from the jobs you added.
+ * DEMAND_MAP: rebuild the skills-to-demonstrate list from your jobs and job-search leads.
  * REGENERATE_DOCUMENTS: rebuild one application's résumé and cover letter without touching its state.
  * SEARCH_POLL: run the saved job searches (job-search services and company boards) and add new leads.
  */

@@ -48,7 +48,7 @@ function SearchForm({ s, sources, keys }: { s?: SearchRow; sources: ReturnType<t
         </div>
         <div>
           <label htmlFor={`${id}-location`}>Location (optional; remote jobs always count)</label>
-          <input id={`${id}-location`} name="location" type="text" defaultValue={s?.location ?? ""} placeholder="e.g. Los Angeles, San Diego" />
+          <input id={`${id}-location`} name="location" type="text" defaultValue={s?.location ?? ""} placeholder="e.g. Chicago, Austin" />
           <label className="inline">
             <input type="checkbox" name="remoteOnly" defaultChecked={s?.remoteOnly ?? false} /> Remote jobs only
           </label>

@@ -22,7 +22,7 @@ model UserProfile {
   updatedAt DateTime @updatedAt
 }
 
-/// One version of the resume source (D1): resume.json at a pinned commit.
+/// One version of the resume source: resume.json at a pinned commit.
 model SourceDocument {
   id               String          @id
   path             String
@@ -37,7 +37,7 @@ model SourceDocument {
   facts            ExperienceFact[]
 }
 
-/// Immutable verified fact with a provenance key (D1).
+/// Immutable verified fact with a provenance key.
 model ExperienceFact {
   id               String         @id
   sourceDocumentId String
@@ -68,7 +68,7 @@ model ProfileValue {
   createdAt  DateTime @default(now())
 }
 
-/// Skills inventory entry (D4).
+/// Skills inventory entry.
 model Skill {
   id                String   @id
   label             String

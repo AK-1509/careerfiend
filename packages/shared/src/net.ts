@@ -3,7 +3,7 @@ import { isIP } from "node:net";
 import { CareerFiendError } from "./errors";
 
 /**
- * Outbound-address guard (public edition). Anyone with an account can paste a
+ * Outbound-address guard. Anyone with an account can paste a
  * URL or an AI base URL that the server then fetches, so every such request
  * must go to the public internet: never to loopback, private, link-local
  * (cloud metadata), carrier-grade NAT or other reserved ranges.

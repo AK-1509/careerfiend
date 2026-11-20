@@ -232,5 +232,5 @@ export class DeepSeekProvider implements AiProvider {
   }
 }
 
-/** The same client under the name the public edition uses for every OpenAI-compatible provider. */
+/** The same client under the name CareerFiend uses for every OpenAI-compatible provider. */
 export const OpenAICompatibleProvider = DeepSeekProvider;

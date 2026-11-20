@@ -2,7 +2,7 @@ import type { Experience, Resume } from "@careerfiend/profile";
 import type { RankedBullet } from "@careerfiend/matcher";
 
 /**
- * Tailored résumé (D2 as amended 2026-10-04). Built from resume.json: a subset
+ * Tailored résumé. Built from resume.json: a subset
  * of entries and bullets, reordered by relevance to the listing, with two
  * ATS aids that are traced to their source:
  *
@@ -202,7 +202,7 @@ export function initialSelection(
 }
 
 /**
- * One trimming step toward the page limit (D2): drop the lowest-ranked
+ * One trimming step toward the page limit: drop the lowest-ranked
  * bullet first (keeping at least one per entry), then the lowest-ranked
  * entry. Education is never dropped. Returns false when nothing can go.
  */
@@ -241,7 +241,7 @@ export interface VerbatimProblem {
 }
 
 /**
- * D2 regression check: every content span is an exact substring of a string
+ * Regression check: every content span is an exact substring of a string
  * value in the pinned resume.json; every tailored span is the validated
  * rewrite for its key; every keyword is on the allowed list; every date span
  * is its own entry's date; labels and separators come from fixed allowlists.

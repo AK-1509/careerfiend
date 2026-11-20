@@ -30,7 +30,7 @@ export const CoverLetterDraftSchema = z.object({
 export type CoverLetterDraft = z.infer<typeof CoverLetterDraftSchema>;
 
 /**
- * Résumé structuring (public edition): the text of an uploaded résumé PDF,
+ * Résumé structuring: the text of an uploaded résumé PDF,
  * split into the resume.json shape. Every value must be copied from the text;
  * the caller drops anything it cannot find there verbatim.
  */

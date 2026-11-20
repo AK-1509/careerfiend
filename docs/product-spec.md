@@ -1,4 +1,4 @@
-# Product spec (public edition)
+# Product spec
 
 ## What CareerFiend does
 
@@ -25,7 +25,7 @@ The general public. One account per person; no sharing between accounts. The ope
 
 ## Self-hosting extras (off by default)
 
-- `FORM_FILLING=on`: the worker also fills the application form in a browser up to (never including) the final button, then waits for review, a typed `APPROVE` and a separate typed `SUBMIT`, exactly as the single-user edition did.
+- `FORM_FILLING=on`: the worker also fills the application form in a browser up to (never including) the final button, then waits for review, a typed `APPROVE` and a separate typed `SUBMIT`.
 - Gmail reply tracking: needs a Google OAuth client configured by the operator; the Email tab appears only then.
 
 ## Non-goals

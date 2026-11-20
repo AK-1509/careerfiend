@@ -17,7 +17,7 @@ import { ANSWER_SPECS, parseAnswers } from "./answers";
 import { checklistStatus, looksUnreviewed, parseChecklist } from "./inventory";
 import type { ResumeSource } from "./source";
 
-/* ------------------------------------------------------------ source (D1) */
+/* ------------------------------------------------------------ source */
 
 export interface IngestResult {
   sourceDocumentId: string;

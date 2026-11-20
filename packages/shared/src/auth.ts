@@ -3,7 +3,7 @@ import type { Config } from "./config";
 import { sha256 } from "./hash";
 
 /**
- * Sign-in for the public edition: one account per person (email + password,
+ * Sign-in: one account per person (email + password,
  * stored only as a scrypt hash) and a signed, expiring session cookie that
  * names the account. Changing a password or SESSION_SECRET signs sessions out.
  */

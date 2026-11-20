@@ -2,7 +2,7 @@
   "name": "careerfiend",
   "private": true,
   "version": "0.1.0",
-  "description": "Tailored résumés and cover letters for every job you apply to (public, multi-account edition)",
+  "description": "Finds hundreds of postings for the job you want, shows which skills they ask for and what to build to prove them, and tailors your résumé and application to each one.",
   "type": "module",
   "engines": {
     "node": ">=22.12"

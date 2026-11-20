@@ -1,9 +1,11 @@
 import { CareerFiendError, decrypt, encrypt, normalizeLabel, randomId, sha256 } from "@careerfiend/shared";
 import { fromJson, toJson, type Db } from "@careerfiend/db";
-import { ATS_KINDS, DEFAULT_ATS_BASES, fetchBoard, parseAtsPosting, USER_AGENT, type AtsKind, type Fetcher } from "@careerfiend/job-parser";
+import { ATS_KINDS, DEFAULT_ATS_BASES, fetchBoard, USER_AGENT, type AtsKind, type Fetcher } from "@careerfiend/job-parser";
 import type { AppContext } from "./context";
 import { ingestParsed } from "./ingest";
 import { enqueue } from "./queue";
+import { scheduleDemandRefresh } from "./demand";
+import { parseLead } from "./lead-postings";
 import { enqueueUrls, describeEnqueue } from "./settings";
 
 /**
@@ -869,6 +871,8 @@ export async function runSavedSearches(ctx: AppContext, opts: { deadline?: numbe
   await sharedDb(ctx)
     .sourceCache.deleteMany({ where: { expiresAt: { lt: new Date(ctx.now().getTime() - 24 * 3600_000) } } })
     .catch(() => undefined);
+  // New postings change which skills are asked for most: rebuild that list soon.
+  if (added) await scheduleDemandRefresh(ctx);
   ctx.logger.info("searches.run", { count: added, status: `${ran} searches` });
   return { searches: ran, added };
 }
@@ -945,21 +949,7 @@ export async function tailorLead(ctx: AppContext, leadId: string, pastedUrl?: st
     return describeEnqueue(r);
   }
   const board = BOARD_IDS.has(lead.source);
-  const parsed = parseAtsPosting({
-    ats: (board ? lead.source : "greenhouse") as AtsKind,
-    board: lead.source,
-    id: lead.externalId,
-    title: lead.title,
-    company: lead.company,
-    locationRaw: lead.location,
-    workplaceHint: lead.remote ? "Remote" : null,
-    remote: lead.remote,
-    descriptionHtml: lead.description,
-    listingUrl: lead.url,
-    applyUrl: lead.applyUrl ?? lead.url,
-    postedAt: lead.postedAt?.toISOString() ?? null,
-    compensation: lead.compensation,
-  });
+  const parsed = parseLead(lead);
   parsed.job.atsIdentifiers = { [lead.source]: lead.externalId };
   if (!board) {
     // Apply through the service's own listing (its terms); CareerFiend never opens it to read the form.

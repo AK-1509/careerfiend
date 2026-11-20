@@ -2,7 +2,7 @@ import { collapseWhitespace } from "@careerfiend/shared";
 import { ResumeSchema, type ExperienceType, type Resume, type SkillCategory } from "./resume-schema";
 
 /**
- * Résumé PDF → resume.json (public edition).
+ * Résumé PDF → resume.json.
  *
  * 1. Text extraction: pdf.js (via unpdf, no native code) positions every text
  *    run; runs are grouped into lines by baseline and joined left to right

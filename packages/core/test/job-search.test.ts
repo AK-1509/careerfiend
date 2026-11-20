@@ -7,6 +7,10 @@ import { NullProvider } from "@careerfiend/ai";
 import {
   availableSources,
   createAppContext,
+  demandJobs,
+  demandView,
+  generateDemandMap,
+  projectQueue,
   leadAction,
   locationMatches,
   politeFetch,
@@ -199,6 +203,39 @@ describe("job search across sources", () => {
       status: JSON.stringify({ himalayas: { at: "2026-01-01T00:00:00Z", matched: 0, added: 0, note: null, state: "checking" } }),
     };
     expect(searchProgress(cut, new Date()).running).toBe(false);
+  });
+
+  it("leads count toward Skills to demonstrate and Project Recommendations without becoming applications", async () => {
+    const { http } = fakeHttp({
+      "https://himalayas.app/jobs/api/search?q=Data%20Analyst&page=1": {
+        jobs: [1, 2, 3].map((n) => ({
+          title: "Data Analyst",
+          companyName: `Company ${n}`,
+          guid: `https://himalayas.app/companies/c${n}/jobs/data-analyst`,
+          applicationLink: `https://himalayas.app/companies/c${n}/jobs/data-analyst`,
+          locationRestrictions: [],
+          description: "<h3>Requirements</h3><ul><li>Experience with SQL and Tableau</li><li>Strong Excel skills</li></ul>",
+          pubDate: 1795000000,
+        })),
+      },
+    });
+    const t = await account(base(http), "a@example.com");
+    await saveSearch(t, { titles: ["Data Analyst"], sources: ["himalayas"] });
+    await runSavedSearches(t);
+    expect(await t.db.application.count()).toBe(0);
+    const postings = await demandJobs(t);
+    expect(postings.map((p) => p.company).sort()).toEqual(["Company 1", "Company 2", "Company 3"]);
+    expect(postings.every((p) => p.id.startsWith("lead:") && p.requirements.length > 0)).toBe(true);
+    // A finished search queued a rebuild of the list.
+    expect(await t.db.workItem.count({ where: { kind: "DEMAND_MAP" } })).toBe(1);
+    await generateDemandMap(t);
+    const sql = (await demandView(t))!.items.find((i) => i.name === "SQL")!;
+    expect(sql.jobIds).toHaveLength(3); // asked for by all three postings
+    expect((await projectQueue(t)).length).toBe(3);
+    // Dismissed and tailored leads drop out.
+    const one = await t.db.lead.findFirstOrThrow();
+    await t.db.lead.update({ where: { id: one.id }, data: { status: "DISMISSED" } });
+    expect(await demandJobs(t)).toHaveLength(2);
   });
 
   it("one request serves every account searching the same thing (shared cache)", async () => {

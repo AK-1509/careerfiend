@@ -52,7 +52,7 @@ async function checkRobots(url: string, deps: ReadDeps): Promise<void> {
 /**
  * Read and normalize one listing URL.
  * - Hosted ATS URLs are read through the board's public API.
- * - LinkedIn and Indeed pages are never read (public edition): the person
+ * - LinkedIn and Indeed pages are never read: the person
  *   follows the listing to the employer's application page and pastes that.
  * - Any other address must resolve to the public internet.
  */

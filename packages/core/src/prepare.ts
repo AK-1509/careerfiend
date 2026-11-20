@@ -68,7 +68,7 @@ async function nextDraftNumber(ctx: AppContext, applicationId: string): Promise<
   return (last?.number ?? 0) + 1;
 }
 
-/** Keep the resume source current (D1): a new HEAD becomes a new SourceDocument version. */
+/** Keep the resume source current: a new HEAD becomes a new SourceDocument version. */
 export async function syncSource(ctx: AppContext): Promise<ResumeSource> {
   const src = await loadResumeSource(ctx);
   await ingestResume(ctx.db, src);
@@ -78,7 +78,7 @@ export async function syncSource(ctx: AppContext): Promise<ResumeSource> {
 /* ------------------------------------------------------------ documents */
 
 /**
- * ATS tailoring (D2 as amended): what the AI does with the job description.
+ * ATS tailoring: what the AI does with the job description.
  * It never judges fit; it shapes your résumé toward the listing:
  *  - Skills line: listing keywords you hold (verified/confirmed) or banked,
  *    in the listing's wording, after your résumé skills.
@@ -191,7 +191,7 @@ export async function generateDocuments(ctx: AppContext, applicationId: string, 
   });
   const atsReport = keywordCoverage(ats.keywords, build.text);
 
-  // Cover-letter facts (D3): resume.json facts + CONFIRMED_BY_USER skills only.
+  // Cover-letter facts: resume.json facts + CONFIRMED_BY_USER skills only.
   const facts = (await currentFacts(ctx.db)).filter((f) => f.kind === "responsibility" || f.kind === "summary" || f.kind === "experience");
   const confirmed = skills.filter((s) => s.status === "CONFIRMED_BY_USER").map((s) => ({ key: `skill:${s.id}`, text: `Confirmed skill: ${s.label}` }));
   const bullets = src.resume.experiences

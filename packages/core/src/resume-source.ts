@@ -17,11 +17,10 @@ import {
 import type { AppContext } from "./context";
 
 /**
- * Where the résumé comes from (public edition): the person's own stored
- * résumé, built from an uploaded PDF and edited on the Profile page. Each save
- * is a new version ("v<N>"), which plays the role the resume repo's commit
- * played in the single-user edition: facts are pinned to it and drafts built on
- * an older version get a SOURCE_CHANGED warning.
+ * Where the résumé comes from: the person's own stored résumé, built from an
+ * uploaded PDF and edited on the Profile page. Each save is a new version
+ * ("v<N>"): facts are pinned to it and drafts built on an older version get a
+ * SOURCE_CHANGED warning.
  */
 export const RESUME_SOURCE_PATH = "profile";
 

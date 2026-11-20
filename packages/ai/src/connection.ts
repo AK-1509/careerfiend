@@ -4,7 +4,7 @@ import { DeepSeekProvider } from "./deepseek";
 import { AnthropicProvider } from "./index";
 
 /**
- * Bring-your-own language model (public edition). Each person connects the
+ * Bring-your-own language model. Each person connects the
  * provider of their choice from the dashboard; the key is stored encrypted in
  * their own data and used only for their requests. Anthropic uses its SDK
  * (schema-enforced output); every other provider goes through the

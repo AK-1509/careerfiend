@@ -111,7 +111,7 @@ async function aiMappings(
 
 /* ---------------------------------------------------------- auto-append */
 
-/** D4: append unknown required skills as UNVERIFIED (de-duplicated). Never counted until confirmed. */
+/** Append unknown required skills as UNVERIFIED (de-duplicated). Never counted until confirmed. */
 export async function appendUnknownSkills(ctx: AppContext, jobId: string, items: { label: string; requirement: string }[]): Promise<string[]> {
   const appended: string[] = [];
   for (const item of items) {

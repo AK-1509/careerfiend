@@ -34,7 +34,7 @@ export interface MatchReportRow {
   note: string;
 }
 
-/** Build the one-page résumé for a job (D2 as amended): selected, reordered, and tailored where a rewrite passed the source check. */
+/** Build the one-page résumé for a job: selected, reordered, and tailored where a rewrite passed the source check. */
 export async function buildResume(input: {
   resume: Resume;
   rawText: string;

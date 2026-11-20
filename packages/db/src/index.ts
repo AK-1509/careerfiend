@@ -143,7 +143,7 @@ function sharedPool(url: string): pgPkg.Pool {
  *   postgres://… / postgresql://…  real Postgres (hosted: Neon pooled URL)
  *   pglite:memory                  embedded, in memory (tests); pglite:memory:<name> is one shared named instance
  *   pglite:/abs/dir                embedded, on disk (local mode without a server)
- * `schema` (Postgres only) puts every table in that schema: one tenant of the public edition.
+ * `schema` (Postgres only) puts every table in that schema: one account's tenant.
  */
 export function createDb(url: string, opts: { migrateUrl?: string; schema?: string } = {}): PrismaClient {
   if (/^postgres(ql)?:\/\//.test(url)) {
@@ -185,7 +185,7 @@ export async function closePglite(url: string): Promise<void> {
 
 const globalForDb = globalThis as unknown as { __careerfiendDb?: PrismaClient };
 
-/** Process-wide client for the configured database (public edition: the shared accounts database). */
+/** Process-wide client for the configured database (the shared accounts database). */
 export function getDb(): PrismaClient {
   if (!globalForDb.__careerfiendDb) {
     const c = loadConfig();

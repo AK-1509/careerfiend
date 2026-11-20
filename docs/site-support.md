@@ -32,7 +32,7 @@ Read only through `politeFetch` (`packages/core/src/job-sources.ts`): a shared c
 
 Exact rate limits are not published by most of these services; the cadences above are deliberately conservative. Response shapes were checked against live responses (Remotive, Himalayas, Jobicy, Remote OK, Arbeitnow, SmartRecruiters); Workable returned 429 to the check and Recruitee/Personio were checked against their documentation only, so their parsers are covered by fixtures.
 
-## Discovery endpoints (D6): terms check
+## Discovery endpoints: terms check
 
 Recorded 2026-09-25. Only the public, unauthenticated GET endpoints are used; volume is a few requests per watched company per account every 6 hours.
 

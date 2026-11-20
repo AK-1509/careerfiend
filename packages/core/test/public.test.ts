@@ -228,7 +228,7 @@ describe("résumé from a PDF and the Profile page", () => {
   });
 });
 
-describe("public edition pipeline (form filling off)", () => {
+describe("pipeline with form filling off", () => {
   let env: TestEnv;
   beforeAll(async () => {
     env = await makeTestEnv();

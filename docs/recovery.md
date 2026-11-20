@@ -29,7 +29,7 @@ Stop the worker any time (Ctrl+C). On start it runs `recoverAfterRestart`:
 
 ## Other manual actions
 
-- **Ready to apply / Apply yourself:** in the public edition every application ends at "Ready to apply" with the tailored documents (`DOCUMENTS_READY`); with form filling on, one CareerFiend could not finish shows "Apply yourself". Either way, apply on the employer's site, then press "I applied: mark as submitted".
+- **Ready to apply / Apply yourself:** every application ends at "Ready to apply" with the tailored documents (`DOCUMENTS_READY`); with form filling on, one CareerFiend could not finish shows "Apply yourself". Either way, apply on the employer's site, then press "I applied: mark as submitted".
 - **Try filling it automatically again** (`FORM_FILLING=on` only): allowed for "Apply yourself" applications where nothing was submitted.
 - **Regenerate:** available on every application except while the worker is working on it.
 - **Edit after approval:** any answer or cover-letter edit creates a new revision and invalidates the approval.

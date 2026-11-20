@@ -1,7 +1,7 @@
 import type { ApplicationState, Warning } from "@careerfiend/shared";
 
 /**
- * The approval invariant (BUILD-GUIDE "Approval invariant"). Pure function so
+ * The approval invariant. Pure function so
  * it can be tested exhaustively; the core service calls it inside the same DB
  * transaction that consumes the approval and creates the submission attempt.
  */

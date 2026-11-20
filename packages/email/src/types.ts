@@ -1,7 +1,7 @@
 /**
  * Email provider abstraction (Gmail first; Outlook could implement the same
  * interface). Deliberately has NO send, reply, forward, delete, archive or
- * mark-read operation: the MVP only reads and adds labels (D8).
+ * mark-read operation: the MVP only reads and adds labels.
  */
 
 export interface EmailMeta {

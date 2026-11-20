@@ -1,7 +1,7 @@
 /**
  * Structured JSON logger with redaction on by default.
  *
- * Rules (BUILD-GUIDE "Observability and privacy"):
+ * Rules:
  * - keys that name personal or credential data are replaced with "[REDACTED]";
  * - free-text values are scanned for emails, phone numbers, bearer tokens and
  *   cookie headers, which are masked;

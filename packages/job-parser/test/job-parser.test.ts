@@ -10,7 +10,6 @@ import {
   parseListingHtml,
   parseLocation,
   readListing,
-  regionGate,
   robotsAllows,
   sitePolicy,
   splitRequirements,
@@ -67,28 +66,17 @@ describe("listing extraction", () => {
   });
 });
 
-describe("region gate (D5)", () => {
-  const gate = (raw: string, extra: Partial<Parameters<typeof parseLocation>[0]> = {}) => regionGate(parseLocation({ raw, ...extra }));
-  it("accepts California on-site or hybrid", () => {
-    expect(gate("Thousand Oaks, CA").pass).toBe(true);
-    expect(gate("Hybrid - San Francisco").pass).toBe(true);
-    expect(gate("South San Francisco, California").pass).toBe(true);
-  });
-  it("accepts US remote, rejects non-US remote and other states", () => {
-    expect(gate("Remote - US").pass).toBe(true);
-    expect(gate("Remote", { applicantCountries: ["United States"] }).pass).toBe(true);
-    expect(gate("Remote - UK")).toMatchObject({ pass: false, reason: "REGION" });
-    expect(gate("Boston, MA")).toMatchObject({ pass: false, reason: "REGION" });
-    expect(gate("Hybrid - Austin, TX")).toMatchObject({ pass: false, reason: "REGION" });
-  });
-  it("accepts unstated remote scope with a review warning", () => {
-    const r = gate("Remote");
-    expect(r.pass).toBe(true);
-    expect(r.warning).toMatch(/REMOTE_SCOPE_UNSTATED/);
+describe("remote scope", () => {
+  const scope = (raw: string, extra: Partial<Parameters<typeof parseLocation>[0]> = {}) => parseLocation({ raw, ...extra }).remoteScope;
+  it("reads who a remote role is open to", () => {
+    expect(scope("Remote - US")).toBe("US");
+    expect(scope("Remote", { applicantCountries: ["United States"] })).toBe("US");
+    expect(scope("Remote - UK")).toBe("other");
+    expect(scope("Remote")).toBe("unknown");
   });
 });
 
-describe("site policy and discovery (D6)", () => {
+describe("site policy and discovery", () => {
   it("never automates LinkedIn or Indeed", () => {
     expect(sitePolicy("https://www.linkedin.com/jobs/view/1")).toMatchObject({ automationAllowed: false, followExternalApplyOnly: true });
     expect(sitePolicy("https://www.indeed.com/viewjob?jk=1")).toMatchObject({ automationAllowed: false, followExternalApplyOnly: true });
