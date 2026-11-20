@@ -243,12 +243,20 @@ export function parseResumeLines(pdf: PdfText, opts: { fallbackEmail?: string; f
   const notes: string[] = [];
   const lines = pdf.lines;
 
-  // Split into sections.
+  // Split into sections. A line that names the section already open ("Personal project" under
+  // PROJECTS) is part of an entry unless it is styled as a heading (capitals, or larger than body text).
+  const sizes = lines.map((l) => l.size).sort((x, y) => x - y);
+  const body = sizes[Math.floor(sizes.length / 2)] ?? 10;
+  const styledAsHeading = (l: PdfLine) => {
+    const letters = l.text.replace(/[^A-Za-z]/g, "");
+    return (letters.length > 1 && letters === letters.toUpperCase()) || l.size > body * 1.1;
+  };
   const sections: { kind: Section; lines: PdfLine[] }[] = [{ kind: "header", lines: [] }];
   for (const l of lines) {
     const h = headingOf(l);
-    if (h) sections.push({ kind: h, lines: [] });
-    else sections[sections.length - 1]!.lines.push(l);
+    const current = sections[sections.length - 1]!;
+    if (h && (h !== current.kind || styledAsHeading(l))) sections.push({ kind: h, lines: [] });
+    else current.lines.push(l);
   }
   if (sections.length === 1) notes.push("No section headings (Experience, Education, Projects, Skills) were found. Add your entries on the Profile page.");
 
@@ -399,8 +407,10 @@ function buildEntry(type: ExperienceType, header: PdfLine[], bullets: string[]):
     bullets = [...others, ...bullets];
   } else if (type === "project") {
     title = rest[0] ?? "";
-    organization = "";
-    if (rest.length > 1) bullets = [...rest.slice(1), ...bullets];
+    // A short second line ("Personal project", "Client: Acme") is the project's context, not a bullet.
+    const second = rest[1];
+    organization = second && second.length <= 40 && !/[.!?]$/.test(second) ? second : "";
+    bullets = [...rest.slice(organization ? 2 : 1), ...bullets];
   } else {
     const a = rest[0] ?? "";
     const b = rest[1] ?? "";

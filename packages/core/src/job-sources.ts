@@ -88,7 +88,7 @@ export const JOB_SOURCES: SourceInfo[] = [
     label: "Arbeitnow",
     covers: "Jobs in Europe (many in Germany), remote and on-site",
     site: "https://www.arbeitnow.com",
-    terms: "Linked back to Arbeitnow; the feed is read at most every 6 hours.",
+    terms: "Linked back to Arbeitnow; its two feed pages are read at most every 6 hours.",
     hosted: true,
   },
   {
@@ -506,7 +506,7 @@ const SERVICES: Record<ServiceId, ServiceRunner> = {
     const postings: FoundPosting[] = [];
     for (const page of [1, 2]) {
       const url = `https://www.arbeitnow.com/api/job-board-api?page=${page}`;
-      const r = await politeFetch(ctx, { host: "www.arbeitnow.com", url, cacheKey: `arbeitnow:${page}`, ttlMs: H6, hostIntervalMs: 30_000 });
+      const r = await politeFetch(ctx, { host: "www.arbeitnow.com", url, cacheKey: `arbeitnow:${page}`, ttlMs: H6, hostIntervalMs: 10_000 });
       rs.push(r);
       for (const j of parseJson<{ data?: Record<string, unknown>[] }>(r)?.data ?? []) {
         postings.push({

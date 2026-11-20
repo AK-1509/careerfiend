@@ -165,9 +165,14 @@ export function fallbackLetter(job: { company: string; title: string }, bullets:
     bullets.find((b) => first && b.experienceId !== first.experienceId);
   // No ordering words ("before that", "then"): the two roles are picked by relevance, not date.
   const sentence = (b: FallbackBullet, also: boolean) => {
+    const what = lowerFirst(b.text.replace(/\.$/, ""));
+    // A personal project has no employer: "In my project X, I built…", not "As X at Personal project".
+    if (b.experienceType === "project" && (!b.organization || /\b(personal|side|independent|own)\b/i.test(b.organization))) {
+      return { text: `In my project ${b.title}, I ${also ? "also " : ""}${what}.`, claimKeys: [b.titleKey, b.key] };
+    }
     const org = b.organization ? ` at ${letterOrgName(b.organization)}` : "";
     const keys = [b.titleKey, b.key, ...(b.organizationKey && !/\bstealth\b/i.test(b.organization) ? [b.organizationKey] : [])];
-    return { text: `As ${b.title}${org}, I ${also ? "also " : ""}${lowerFirst(b.text.replace(/\.$/, ""))}.`, claimKeys: keys };
+    return { text: `As ${b.title}${org}, I ${also ? "also " : ""}${what}.`, claimKeys: keys };
   };
   const draft: { part: number; text: string; claimKeys: string[] }[] = [
     { part: 1, text: `I'm applying for the ${job.title} role at ${job.company}.`, claimKeys: [] },

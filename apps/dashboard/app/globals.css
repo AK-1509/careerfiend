@@ -515,3 +515,6 @@ ol.answers > li + li {
 form.inline-form {
   display: inline;
 }
+summary > .entry-head {
+  display: inline-flex;
+}

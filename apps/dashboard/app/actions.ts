@@ -90,7 +90,10 @@ const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 export async function addUrls(f: FormData) {
   await requireSession();
   await attempt("/", async () => {
-    return describeEnqueue(await enqueueUrls(await ctx(), str(f, "urls")));
+    const r = await enqueueUrls(await ctx(), str(f, "urls"));
+    // Nothing usable pasted (only LinkedIn/Indeed or non-links): show it as an error, not a success.
+    if (!r.queued && !r.alreadyQueued.length) throw new Error(describeEnqueue(r));
+    return describeEnqueue(r);
   });
 }
 
